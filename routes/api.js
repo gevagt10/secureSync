@@ -1,0 +1,177 @@
+var express  = require('express');
+var router   = express.Router();
+var jwt      = require('jsonwebtoken');
+var config   = require('../config/config');
+var User     = require('../models/user');
+var Password = require('../models/password');
+var Security = require('../models/security');
+
+/* MIDDLEWARE */
+router.use(function (req, res, next) {
+    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, config.secret, function (err, decoded) {
+            if (err) {
+                return res.status(401).send({
+                    success: false,
+                    message: 'Failed to authenticate token.'
+                });
+            } else {
+                req.decoded = decoded;
+                next();
+            }
+        });
+    } else {
+        return res.status(403).send({
+            success: false,
+            message: 'No token provided.'
+        });
+    }
+});
+
+
+// Requests
+// Home
+// router.post('/upload', function(req, res) {
+//     console.log(req.files);
+//
+//     return res.json({'title':"GOGGFG"});
+// });
+
+// Password
+router.post('/getfiles', function(req,res){getFiles(req,res)});
+router.get('/getPasswordDetilas', function(req,res){getPasswordDetilas(req,res)});
+router.post('/getPasswordPolicies', function(req,res){getPasswordPolicies(req,res)});
+router.post('/createPasswordPolicy', function(req,res){createPasswordPolicy(req,res)});
+router.post('/removePasswordPolicy', function(req,res){removePasswordPolicy(req,res)});
+// Security
+router.post('/createSecurityPolicy', function(req,res){createSecurityPolicy(req,res)});
+router.post('/getSecurityPolicies', function(req,res){getSecurityPolicies(req,res)});
+router.post('/removeSecurityPolicy', function(req,res){removeSecurityPolicy(req,res)});
+
+function getFiles(req,res) {
+    return res.json({'title':"GOGGFG"});
+}
+
+/**=====================================================**/
+/**                     Password                        **/
+/**====================================================**/
+
+// static function for password policy detiles
+function getPasswordDetilas(req,res) {
+    return res.json({
+        Complaxity: [{id:"1",name:"Easy"},{id:"2",name:"Medium"},{id:"3",name:"Hard"}],
+        History: [{id:"1",name:"1"},{id:"2",name:"2"},{id:"3",name:"3"}],
+        Expired: [{id:"1",name:"1 min"},{id:"2",name:"1 hour"},{id:"3",name:"1 week"}],
+        Length: [{id:"1",name:"5"},{id:"2",name:"6"},{id:"3",name:"7"}]
+    });
+}
+
+// Create password policy
+function createPasswordPolicy(req,res) {
+    //console.log(req.body.complixity['name']);
+    // Check first if name exist
+    Password.findOne({
+        name: req.body.name
+    }, function(err, password) {
+        if (err) throw err;
+        if (password) {
+            return res.status(403).send('Name already exists');
+        } else  {
+            Password.create({
+                name : req.body.name,
+                complaxity: req.body.complixity.name,
+                history: req.body.history.name,
+                expired: req.body.expired.name,
+                length: req.body.length.name,
+                userId: req.body.userId
+            }, function(err, password) {
+                if (err)
+                    return res.send(err);
+                // Return
+                return res.json({'password':password,'message':"Policy added successfully"});
+            });
+        }
+    });
+}
+
+// Get all password policy
+function getPasswordPolicies(req,res) {
+    Password.find({userId:req.body._id},function(err,password){
+        if (err) throw err;
+        if (password) {
+            res.send(password);
+        }
+    });
+}
+
+// Remove password policy
+function removePasswordPolicy(req,res) {
+    Password.remove({_id: req.body._id},function(err){
+        if (err) res.status(404).send('There is an error remove policy');
+        return res.json({'message':"Policy removed"});
+    });
+}
+
+/**=====================================================**/
+/**                     Security                       **/
+/**====================================================**/
+function createSecurityPolicy(req,res) {
+    //console.log(req.body.password._id);
+    Security.findOne({
+        name: req.body.name
+    }, function(err, security) {
+        if (err) throw err;
+        if (security) {
+            return res.status(403).send('Name already exists');
+        } else  {
+            Security.create({
+                name : req.body.name,
+                password: req.body.password,
+                readwrite: req.body.readwrite,
+                lock: req.body.lock,
+                userId: req.body.userId
+            }, function(err, security) {
+                if (err)
+                    return res.send(err);
+                // Return
+                return res.json({'security':security,'message':"Security policy added successfully"});
+            });
+        }
+    });
+}
+
+function getSecurityPolicies(req,res) {
+    Security.find({userId:req.body._id},function(err,security){
+        if (err) throw err;
+        if (security) {
+            res.send(security);
+        }
+    });
+}
+
+// Remove security policy
+function removeSecurityPolicy(req,res) {
+    console.log(req.body);
+    Security.remove({_id: req.body._id},function(err){
+        if (err) res.status(404).send('There is an error remove policy');
+        return res.json({'message':"Policy removed"});
+    });
+}
+
+/**=====================================================**/
+/**                     Home page                       **/
+/**====================================================**/
+function upload(req,res) {
+    console.log(req.body);
+}
+
+/* ANY POST */
+router.post('*', function(req, res) {
+    return res.status(403).send({
+        success: false,
+        message: 'There was a problem completing this request.'
+    });
+});
+
+module.exports = router;

@@ -1,0 +1,266 @@
+* {
+  margin: 0;
+  padding: 0;
+  outline: 0 !important;
+  box-sizing: border-box;
+}
+
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  #background-color: #00B7FF ;
+  background-color: #0088ff;;
+}
+
+a {
+  color: #00B7FF;
+}
+.display-block {
+  display: block;
+}
+
+.container {
+  width: 1000px;
+  max-width: 100%;
+}
+.error {
+  color: #e74c3c;
+}
+.success {
+  color: #2ecc71;
+}
+
+/* ------------------ LOGIN ------------------ */
+.login-page {
+  width: 360px;
+  margin-top: 100px;
+  #padding: 12% 0 0 ;
+  #margin: auto;
+  #margin: 50px 250px auto;
+  #margin-left: 250px;
+}
+.login-page h1 {
+  font-size: 36px;
+  text-align: center;
+  font-weight: 900;
+  background-color: white;
+  #border: 1px solid #b8dcff;
+  border-radius: 1px;
+  color: #00b7ff;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+.login-main-form {
+  position: relative;
+  z-index: 1;
+  background: #FFFFFF;
+  max-width: 360px;
+  margin: 0 auto 300px;
+  padding: 45px;
+  text-align: center;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+.login-main-form input {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.login-main-form button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #00B7FF;
+  width: 100%;
+  border: 0;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  cursor: pointer;
+}
+.login-main-form button:hover,.login-main-form button:active,.login-main-form button:focus {
+  background: #0077a4;
+}
+.login-main-form .message {
+  margin: 15px 0 0;
+  color: #b3b3b3;
+  font-size: 12px;
+}
+.login-main-form .message a {
+  color: #2b669a;
+  text-decoration: none;
+  cursor: pointer;
+  #display: inline;
+}
+/*.login-main-form .login-form {*/
+  /*display: block;*/
+/*}*/
+.login-main-form .register-form {
+  display: block;
+}
+
+/* ------------------ HEADER ------------------ */
+
+header {
+  position: fixed;
+  width: 100%;
+  height: 80px;
+  background-color: #ffffff;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 2px 5px 0 rgba(0, 0, 0, 0.24);
+  border-top: 1px solid #00b7ff;
+  z-index: 10;
+}
+header h1 {
+  position: fixed;
+  font-size: 52px;
+  font-weight: 900;
+  color: #00b7ff;
+  padding-left: 25px;
+  padding-top: 10px;
+}
+
+/* ------------------ ASIDE ------------------ */
+
+aside {
+  position: fixed;
+  width: 250px;
+  height: 100%;
+  margin-top: 80px;
+  background-color: #ffffff;
+  z-index: 0;
+  #background-color: #00b7ff;
+}
+aside .profile {
+  width: 100%;
+  color: #1d191c;
+  display: inline-flex;
+  padding-bottom: 10px;
+  background-color: whitesmoke;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 2px 5px 0 rgba(0, 0, 0, 0.24);
+  #border-bottom: 1px solid #00B7FF;
+}
+aside .profile-circle {
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  background-color: #00b7ff;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+aside .profile-name {
+  padding-top: 20px;
+  padding-left: 10px;
+  font-weight: 600;
+}
+aside .profile-name a {
+  text-decoration: none;
+  cursor: pointer;
+  color: #423e41;
+}
+aside .menu {
+  /*border-bottom: 1px solid black;*/
+  padding-top: 10px;
+}
+aside .menu-style {
+  #height: 50px;
+  /* vertical-align: middle; */
+  border-bottom: 1px solid #e6e6e6;
+  #padding-top: 20px;
+  #padding-left: 10px;
+  font-size: 16px;
+}
+aside .menu-style a {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  color: #3c3c3c;
+  padding-top: 20px;
+  padding-left: 10px;
+  padding-bottom: 15px;
+  text-decoration: none;
+}
+aside .menu-style a:hover {
+  background-color: #00B7FF;
+  color: whitesmoke;
+}
+
+/* ------------------ SECTION ------------------ */
+section {
+  padding-left: 250px;
+  padding-top: 80px;
+  height: 100%;
+}
+section table {
+  margin-top: 10px;
+}
+section table td {
+  color:white;
+}
+section table td a {
+  color:white;
+  cursor: pointer;
+}
+/* ------------------ SECTION-HEADER ------------------ */
+.section-header {
+  font-size: 30px;
+  padding-top: 30px;
+  color: white;
+  border-bottom: 1px solid white;
+}
+.section-header .btn {
+  padding-bottom: 2px;
+}
+
+
+/* ------------------ HOME-INNER-HEADER ------------------ */
+.inner-header {
+  width: calc(100% - 250px);
+  position: fixed;
+  height: 90px;
+  #background-color: #67f3ff;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 2px 5px 0 rgba(0, 0, 0, 0.24);
+  border-top: 1px solid #67f3ff;
+  z-index: 11;
+}
+.inner-header-files {
+  font-size: 30px;
+  color: white;
+  margin-left: 30px;
+  margin-top: 25px;
+}
+.inner-header-btn {
+  margin-top: 25px;
+  margin-right: 40px;
+}
+
+/* ------------------ DIALOG ------------------ */
+
+.modal-content {
+  width: 500px;
+  margin-bottom: 50px;
+}
+.modal-header {
+  #padding: 2px 16px;
+  background-color: #00B7FF;
+  color: white;
+}
+
+.modal-body {
+  padding: 2px 16px;
+
+}
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+.close {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}

@@ -1,0 +1,28 @@
+<div class="col-md-4"></div>
+<div class="col-md-4">
+<div class="login-page">
+    <h1>SecureSync</h1>
+    <div class="login-main-form">
+        <div class="alert alert-danger" ng-class="{'animated bounceIn': true}" ng-bind="response" ng-if="isError"></div>
+        <div class="alert alert-success" ng-class="{'animated bounceIn': true}" ng-bind="response" ng-if="isSuccess"></div>
+
+        <form name="registerF" class="register-form" ng-if="selected == 1" ng-submit="registerForm(user)">
+            <input type="text" placeholder="Name" ng-model="user.name" tabindex="1" required/>
+            <input type="email" placeholder="Email address" ng-model="user.email" tabindex="2" required/>
+            <input type="password" placeholder="Password" ng-model="user.password" tabindex="3" required/>
+            <div class="form-group">
+                <input name="confirm" id="confirm" type="password" placeholder="Confirm Password" ng-model="user.confirm" ng-equal="user.password" tabindex="4" required/>
+                <div class="pull-left error" ng-show="registerF.confirm.$error.verify && registerF.confirm.$dirty">Passwords does not match.</div>
+            </div>
+            <button class="btn" type="submit" tabindex="5" ng-disabled="registerF.$invalid">create</button>
+            <p class="message">Already registered? <a ng-click="selectedTab(2)">Sign In</a></p>
+        </form>
+        <form name="loginF" class="login-form" ng-if="selected == 2" ng-submit="loginForm(model)" novalidate>
+            <input type="text" placeholder="Email address" ng-model="model.email" tabindex="1" required autofocus/>
+            <input type="password" placeholder="Password" ng-model="model.password" tabindex="2" required/>
+            <button class="btn" type="submit" ng-disabled="loginF.$invalid">login</button>
+            <p class="message">Not registered? <a ng-click="selectedTab(1)">Create an account</a></p>
+        </form>
+    </div>
+</div>
+</div>

@@ -1,0 +1,22 @@
+<div class="col-md-12" id="popupContainer">
+    <div class="section-header">Security policy
+        <div class="pull-right btn btn-primary" ng-click="showConfirm($event)">Add</div>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th ng-repeat="header in headers">{{header.title}}</th>
+            <th>Remove</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="policy in policies">
+            <td><a>{{policy.name}}</a></td>
+            <td>{{policy.password.name}}</td>
+            <td>{{policy.readwrite}}</td>
+            <td>{{policy.lock}}</td>
+            <td><button class="btn btn-danger" ng-click="remove(policy)">remove</button></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

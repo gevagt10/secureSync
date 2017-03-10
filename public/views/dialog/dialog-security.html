@@ -1,0 +1,64 @@
+<md-dialog class="modal-content" aria-label="Mango(Fruit)">
+    <form name="securityDialogForm" ng-cloak>
+        <!--<form name="dialog-password.js" ng-submit="registerForm(user)">-->
+        <md-toolbar>
+            <div class="md-toolbar-tools modal-header">
+                <h2>Security policy</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon md-svg-src="images/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <h4>Create new security policy</h4>
+                <!-- Name -->
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" class="form-control" name="Name" ng-model="policy.name" tabindex="1"
+                           placeholder="Name" required autofocus/>
+                </div>
+                <!-- Password -->
+                <div class="form-group">
+                    <label>Password policy:</label>
+                    <select name="password" id="password" class="form-control" tabindex="2"
+                            ng-options="option.name for option in policies"
+                            ng-model="policy.password" required>
+                    </select>
+                </div>
+                <!-- Read/Write -->
+                <div class="form-group">
+                    <label for="readwrite">Read/Write:</label>
+                    <select name="readwrite" id="readwrite" class="form-control" tabindex="3"
+                            ng-options="item for item in readwrite"
+                            ng-model="policy.readwrite">
+                    </select>
+                </div>
+
+                <!-- Lock -->
+                <div class="form-group">
+                    <label>Lock:</label>
+                    <input type="number" class="form-control" name="lock" ng-model="policy.lock" tabindex="4" maxlength="4"
+                           placeholder="Insert password"/>
+                </div>
+
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <!--<md-button href="http://en.wikipedia.org/wiki/Mango" target="_blank" md-autofocus>-->
+            <!--More on Wikipedia-->
+            <!--</md-button>-->
+
+            <span flex></span>
+            <md-button ng-click="cancel()">
+                Cancel
+            </md-button>
+            <md-button ng-click="save(policy)" tabindex="5" ng-disabled="securityDialogForm.$invalid">
+                Save
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

@@ -1,0 +1,7 @@
+<div class="inner-header">
+    <div class="pull-left inner-header-files">Files</div>
+    <input class="pull-right" type="file" ngf-select ng-model="picFile" name="file"
+            accept="image/*" ngf-max-size="2MB" required
+            ngf-model-invalid="errorFile"/>
+    <button class="pull-right btn btn-primary inner-header-btn" ng-click="uploadFile(picFile)">Upload</button>
+</div>
