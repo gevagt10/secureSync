@@ -34,6 +34,22 @@ app.config(function($routeProvider,$locationProvider) {
             }
         }
     })
+
+    .when('/groups', {
+
+        title: 'secureSync',
+        templateUrl: '../views/groups.html',
+        controller: 'GroupsCtrl',
+        resolve: {
+            check: function ($location, sessionService) {
+                if (!sessionService.get('user')) {
+                    $location.path('/');
+                }
+            }
+        }
+
+    })
+
     .when('/security', {
 
         title: 'Security policy',

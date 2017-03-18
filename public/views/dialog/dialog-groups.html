@@ -1,0 +1,56 @@
+<md-dialog class="modal-content" aria-label="Mango(Fruit)">
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools modal-header">
+                <h2>Group</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon md-svg-src="images/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+
+                <h4>Create new group</h4>
+                <!-- Name -->
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" class="form-control" name="Name" ng-model="group.name" tabindex="1"
+                           placeholder="Name" required autofocus/>
+                </div>
+                <!-- Email -->
+                <div class="form-group">
+                    <label>Email:</label>
+                    <div class="form-inline">
+                        <input type="email" class="form-control" name="Email" ng-model="group.email" tabindex="2"
+                               placeholder="Name" required autofocus />
+                        <button class="btn btn-success" ng-click="add(group.email)">Add</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Emails:</label>
+                    <div ng-repeat="email in emails track by $index" style="margin-bottom: 5px">
+                        <div class="form-inline" style="display: flex">
+                            <span style="padding: 10px 0; width: 100%">{{email}}</span>
+                            <button class="btn btn-danger" ng-click="delete(email)">remove</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button ng-click="cancel()">
+                Cancel
+            </md-button>
+            <md-button ng-click="save(group)" tabindex="4">
+                Save
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

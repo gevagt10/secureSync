@@ -2,9 +2,13 @@ var express  = require('express');
 var router   = express.Router();
 var jwt      = require('jsonwebtoken');
 var config   = require('../config/config');
+
 var User     = require('../models/user');
 var Password = require('../models/password');
 var Security = require('../models/security');
+var Group    = require('../models/group');
+
+var Files    = require('../routes/files');
 
 /* MIDDLEWARE */
 router.use(function (req, res, next) {
@@ -29,36 +33,32 @@ router.use(function (req, res, next) {
     }
 });
 
-
-// Requests
-// Home
-// router.post('/upload', function(req, res) {
-//     console.log(req.files);
-//
-//     return res.json({'title':"GOGGFG"});
-// });
+// Files
+router.use('/files', Files);
 
 // Password
-router.post('/getfiles', function(req,res){getFiles(req,res)});
-router.get('/getPasswordDetilas', function(req,res){getPasswordDetilas(req,res)});
+router.post('/getPasswordDetilas', function(req,res){getPasswordDetilas(req,res)});
 router.post('/getPasswordPolicies', function(req,res){getPasswordPolicies(req,res)});
 router.post('/createPasswordPolicy', function(req,res){createPasswordPolicy(req,res)});
 router.post('/removePasswordPolicy', function(req,res){removePasswordPolicy(req,res)});
+
 // Security
 router.post('/createSecurityPolicy', function(req,res){createSecurityPolicy(req,res)});
 router.post('/getSecurityPolicies', function(req,res){getSecurityPolicies(req,res)});
 router.post('/removeSecurityPolicy', function(req,res){removeSecurityPolicy(req,res)});
 
-function getFiles(req,res) {
-    return res.json({'title':"GOGGFG"});
-}
+// Groups
+router.post('/createGroup', function(req,res){createGroup(req,res)});
+router.post('/getGroups', function(req,res){getGroups(req,res)});
+
 
 /**=====================================================**/
 /**                     Password                        **/
-/**====================================================**/
+/**==================================================== **/
 
 // static function for password policy detiles
 function getPasswordDetilas(req,res) {
+
     return res.json({
         Complaxity: [{id:"1",name:"Easy"},{id:"2",name:"Medium"},{id:"3",name:"Hard"}],
         History: [{id:"1",name:"1"},{id:"2",name:"2"},{id:"3",name:"3"}],
@@ -113,9 +113,10 @@ function removePasswordPolicy(req,res) {
     });
 }
 
-/**=====================================================**/
-/**                     Security                       **/
-/**====================================================**/
+/** =====================================================**/
+/**                     Security                         **/
+/** ==================================================== **/
+
 function createSecurityPolicy(req,res) {
     //console.log(req.body.password._id);
     Security.findOne({
@@ -159,12 +160,53 @@ function removeSecurityPolicy(req,res) {
     });
 }
 
-/**=====================================================**/
-/**                     Home page                       **/
-/**====================================================**/
-function upload(req,res) {
-    console.log(req.body);
+// Groups
+function createGroup(req, res) {
+
+    Group.findOne({
+        'name': req.body.name,
+        'user._id': req.body.user._id
+    }, function(err, group) {
+
+        if (group) {
+
+            return res.json({
+                success: false
+            });
+
+        } else {
+
+            Group.create({
+                name : req.body.name,
+                user : req.body.user,
+                emails : req.body.emails
+            }, function(err, group) {
+
+                return res.json({
+                    success: true,
+                    group: group
+                });
+
+            });
+
+        }
+
+    });
 }
+function getGroups(req, res) {
+
+    Group.find({ 'user._id': req.body._id }, function (err, groups) {
+        if (err) throw err;
+
+        return res.json({
+            success: true,
+            groups: groups
+        });
+
+    });
+
+}
+
 
 /* ANY POST */
 router.post('*', function(req, res) {

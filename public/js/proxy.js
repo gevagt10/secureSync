@@ -14,7 +14,6 @@ app.factory('proxyService', function($http, $q) {
         return deferred.promise;
     };
 
-
     var authenticate = function(data) {
         var deferred = $q.defer();
         $http.post(auth + 'authenticate', data).then(function(response) {
@@ -25,10 +24,13 @@ app.factory('proxyService', function($http, $q) {
         return deferred.promise;
     };
 
+    /** ------------------------------------------------------------ **/
+    /** ---------------------- Files functions --------------------- **/
+    /** ------------------------------------------------------------ **/
 
     var getFiles = function(data) {
         var deferred = $q.defer();
-        $http.post(url + 'getfiles',data).then(function(response) {
+        $http.post(url + 'files/get', data).then(function(response) {
             deferred.resolve(response);
         }).catch(function(data, status, headers, config) {
             deferred.reject(data);
@@ -36,13 +38,23 @@ app.factory('proxyService', function($http, $q) {
         return deferred.promise;
     };
 
+    var deleteFile = function (data) {
+        var deferred = $q.defer();
+        $http.post(url + 'files/delete', data).then(function(response) {
+            deferred.resolve(response);
+        }).catch(function(data, status, headers, config) {
+            deferred.reject(data);
+        });
+        return deferred.promise;
+    };
 
     /** ------------------------------------------------------------ **/
     /** -------------------- Password functions -------------------- **/
     /** ------------------------------------------------------------ **/
-    var getPasswordDetilas = function() {
+
+    var getPasswordDetilas = function(user) {
         var deferred = $q.defer();
-        $http.get(url + 'getPasswordDetilas').then(function(response) {
+        $http.post(url + 'getPasswordDetilas',user).then(function(response) {
             deferred.resolve(response);
         }).catch(function(data, status, headers, config) {
             deferred.reject(data);
@@ -84,6 +96,7 @@ app.factory('proxyService', function($http, $q) {
     /** ------------------------------------------------------------ **/
     /** -------------------- Security functions -------------------- **/
     /** ------------------------------------------------------------ **/
+
     var createSecurityPolicy = function(data) {
         var deferred = $q.defer();
         $http.post(url + 'createSecurityPolicy',data).then(function(response) {
@@ -114,18 +127,43 @@ app.factory('proxyService', function($http, $q) {
         return deferred.promise;
     };
 
+    /* ------------------------------------------------------------ */
+    /* -------------------- Groups functions ---------------------- */
+    /* ------------------------------------------------------------ */
+    var createGroup = function (group) {
+        var deferred = $q.defer();
+        $http.post(url + 'createGroup', group).then(function(response) {
+            deferred.resolve(response);
+        }).catch(function(data, status, headers, config) {
+            deferred.reject(data);
+        });
+        return deferred.promise;
+    };
+
+    var getGroups = function (group) {
+        var deferred = $q.defer();
+        $http.post(url + 'getGroups', group).then(function(response) {
+            deferred.resolve(response);
+        }).catch(function(data, status, headers, config) {
+            deferred.reject(data);
+        });
+        return deferred.promise;
+    };
 
     return {
         register: register,
         authenticate: authenticate,
         getFiles:getFiles,
+        deleteFile: deleteFile,
         getPasswordDetilas:getPasswordDetilas,
         createPasswordPolicy:createPasswordPolicy,
         getPasswordPolicies:getPasswordPolicies,
         removePasswordPolicy:removePasswordPolicy,
         createSecurityPolicy:createSecurityPolicy,
         getSecurityPolicies:getSecurityPolicies,
-        removeSecurityPolicy:removeSecurityPolicy
+        removeSecurityPolicy:removeSecurityPolicy,
+        createGroup: createGroup,
+        getGroups:getGroups
     }
 
 });

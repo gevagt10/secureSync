@@ -17,7 +17,7 @@ app.controller('PasswordCtrl', function($scope,$mdDialog,proxyService,sessionSer
     /** ------------ Events ------------ **/
     $scope.showConfirm = function(ev) {
         // Get password deatiles from server
-        getPasswordDetilas();
+        getPasswordDetilas(User);
         // Dialog
         $mdDialog.show({
             controller: DialogController,
@@ -27,7 +27,7 @@ app.controller('PasswordCtrl', function($scope,$mdDialog,proxyService,sessionSer
             clickOutsideToClose:true
         }).then(function(policy) {
                 policy.token = User.token;
-                policy.userId = User.user._id;
+                policy.userId = User._id;
                 createPasswordPolicy(policy);
             }, function() {
 
@@ -54,8 +54,9 @@ app.controller('PasswordCtrl', function($scope,$mdDialog,proxyService,sessionSer
     }
 
     // Get static options for dialog popup - create new policy
-    function getPasswordDetilas(){
-        proxyService.getPasswordDetilas().then(function(response){
+    function getPasswordDetilas(User){
+        proxyService.getPasswordDetilas(User).then(function(response){
+            console.log(response);
             dialogService.setPassword(response.data);
         },function(error){
 

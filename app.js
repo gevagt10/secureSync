@@ -24,7 +24,7 @@ mongoose.connect(database.url, function (err) {
 });
 
 // uncomment after placing your favicon in /public
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -32,6 +32,17 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
+
+app.use(function(req,res,next) {
+    var _send = res.send;
+    var sent = false;
+    res.send = function(data) {
+        if (sent) return;
+        _send.bind(res)(data);
+        sent = true;
+    };
+    next();
+});
 
 // Routing
 app.use('/', auth);

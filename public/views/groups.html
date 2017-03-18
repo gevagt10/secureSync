@@ -1,0 +1,45 @@
+<div class="col-md-12 groups" id="popupContainer">
+  <div class="section-header">Groups<div class="pull-right btn btn-primary" ng-click="createGroup($event)">Add</div></div>
+
+  <div ng-repeat="group in groups">
+
+    <button class="btn btn-info group"
+            ng-bind="group.name"
+            id="{{ $index }}"
+            data-toggle="collapse" data-target="#collapse_{{ $index }}"></button>
+
+    <div id="collapse_{{ $index }}" class="collapse">
+    ergerga
+    </div>
+
+  </div>
+
+
+  <!--
+  <table class="table table-bordered">
+
+    <tr>
+      <th></th>
+      <th>##</th>
+      <th>Name</th>
+      <th>Owner</th>
+      <th>Delete</th>
+    </tr>
+
+    <tr ng-repeat="group in groups" id="{{ $index }}">
+      <td><span class="glyphicon glyphicon-plus" ng-click="selectItem($index)"></span></td>
+      <td ng-bind="$index+1"></td>
+      <td ng-bind="group.name"></td>
+      <td ng-bind="group.user.name"></td>
+      <td><button class="btn btn-danger" ng-click="deleteGroup(group)">DELETE</button></td>
+
+      <tr>
+       <td colspan="5">greger</td>
+      </tr>
+
+    </tr>
+
+  </table>
+  -->
+
+</div>

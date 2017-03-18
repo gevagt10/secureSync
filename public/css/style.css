@@ -203,6 +203,7 @@ section table td a {
   color:white;
   cursor: pointer;
 }
+
 /* ------------------ SECTION-HEADER ------------------ */
 .section-header {
   font-size: 30px;
@@ -213,7 +214,6 @@ section table td a {
 .section-header .btn {
   padding-bottom: 2px;
 }
-
 
 /* ------------------ HOME-INNER-HEADER ------------------ */
 .inner-header {
@@ -232,10 +232,37 @@ section table td a {
   margin-top: 25px;
 }
 .inner-header-btn {
-  margin-top: 25px;
+  margin-top: 30px;
   margin-right: 40px;
 }
+.upload-area {
+  margin-right: 50px;
+  margin-top: 30px;
+}
+.section-home {
+  margin-top: 120px;
+}
 
+.nav-tabs>li.active>a,
+.nav-tabs>li.active>a:focus,
+.nav-tabs>li.active>a:hover {
+  color: #fff;
+  cursor: pointer;
+  background: transparent;
+}
+
+.nav>li>a:focus,
+.nav>li>a:hover {
+  background: transparent;
+}
+
+.section-home .nav-tabs li a {
+  color: #fff;
+}
+
+.section-home .table {
+  color: #fff;
+}
 /* ------------------ DIALOG ------------------ */
 
 .modal-content {
@@ -263,4 +290,17 @@ section table td a {
   float: right;
   font-size: 28px;
   font-weight: bold;
+}
+
+
+table th,
+table td {
+  color: #fff;
+}
+
+/* ------------------ GROUPS ------------------ */
+
+.group {
+  margin: 10px 0;
+  display: block;
 }

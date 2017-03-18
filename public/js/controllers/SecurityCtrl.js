@@ -26,8 +26,8 @@ app.controller('SecurityCtrl', function($scope,$mdDialog,proxyService,sessionSer
             targetEvent: ev,
             clickOutsideToClose:true
         }).then(function(policy) {
-            policy.token = User.token;
-            policy.userId = User.user._id;
+            //policy.token = User.token;
+            policy.userId = User._id;
             createSecurityPolicy(policy);
         }, function() {
 
@@ -87,7 +87,7 @@ app.controller('SecurityCtrl', function($scope,$mdDialog,proxyService,sessionSer
 
         /** ------------ Async dialog functions ------------ **/
         function getAllPoliciesPassword(User){
-            proxyService.getPasswordPolicies(User.user).then(function(response){
+            proxyService.getPasswordPolicies(User).then(function(response){
                 $scope.policies = response.data;
             },function(error){
 

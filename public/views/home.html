@@ -1,7 +1,67 @@
+
 <div class="inner-header">
-    <div class="pull-left inner-header-files">Files</div>
-    <input class="pull-right" type="file" ngf-select ng-model="picFile" name="file"
-            accept="image/*" ngf-max-size="2MB" required
-            ngf-model-invalid="errorFile"/>
-    <button class="pull-right btn btn-primary inner-header-btn" ng-click="uploadFile(picFile)">Upload</button>
+    <form name="uploadForm">
+        <div class="pull-left inner-header-files">Home</div>
+        <div class="pull-right upload-area">
+            <button class="pull-right btn btn-primary" ng-click="uploadFile(inputFile)" ng-disabled="uploadForm.$invalid">Upload</button>
+            <div class="fileinput fileinput-new" data-provides="fileinput">
+                <span class="btn btn-default btn-file">
+                    <span class="fileinput-new">Select file</span>
+                    <span class="fileinput-exists">Change</span>
+                    <input type="file" ngf-select ng-model="inputFile" name="file"
+                           accept="/*" ngf-max-size="2MB" required
+                           ngf-model-invalid="errorFile"/>
+                </span>
+                <span class="fileinput-filename"></span>
+                <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
+            </div>
+            <div>
+                {{status}}
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<div class="col-md-12 section-home">
+
+    <ul class="nav nav-tabs">
+      <li role="presentation" ng-click="selectTab(1)" ng-class="{ 'active': currentTab == 1 }"><a href="#">My Files</a></li>
+      <li role="presentation" ng-click="selectTab(2)" ng-class="{ 'active': currentTab == 2 }"><a href="#">All Files</a></li>
+    </ul>
+
+    <div ng-if="currentTab == 1">
+
+        <table class="table table-bordered">
+
+          <tr>
+            <th>##</th>
+            <th>Name</th>
+            <th>Owner</th>
+            <th>Size</th>
+            <th>Share</th>
+            <th>Download</th>
+            <th>Delete</th>
+          </tr>
+
+          <tr ng-repeat="file in files">
+            <td ng-bind="$index+1"></td>
+            <td ng-bind="file.name"></td>
+            <td ng-bind="file.user.name"></td>
+            <td ng-bind="file.size | filesize"></td>
+            <td><button class="btn btn-primary">SHARE</button></td>
+            <td><button class="btn btn-success">DOWNLOAD</button></td>
+            <td><button class="btn btn-danger" ng-click="deleteFile(file)">DELETE</button></td>
+          </tr>
+
+        </table>
+
+    </div>
+
+    <div ng-if="currentTab == 2">
+
+        All files
+
+    </div>
+
 </div>
