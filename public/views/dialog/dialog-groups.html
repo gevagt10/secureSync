@@ -12,7 +12,9 @@
 
         <md-dialog-content>
             <div class="md-dialog-content">
-
+                <div ng-if="isExist" class="alert alert-danger fade in">
+                    <strong>Failad!</strong> Name already exist.
+                </div>
                 <h4>Create new group</h4>
                 <!-- Name -->
                 <div class="form-group">

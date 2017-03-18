@@ -8,8 +8,17 @@
             id="{{ $index }}"
             data-toggle="collapse" data-target="#collapse_{{ $index }}"></button>
 
-    <div id="collapse_{{ $index }}" class="collapse">
-    ergerga
+    <div id="collapse_{{ $index }}" class="collapse group-collapse col-md-12">
+      <div class="form-inline">
+        <label>Owner:</label>
+        <div ng-bind="group.user.name"></div>
+      </div>
+      <label>Emails:</label>
+      <div class="form-group" ng-repeat="email in group.emails">
+        <div class="form-control" ng-bind="email"></div>
+      </div>
+
+      <button class="btn btn-danger" ng-click="deleteGroup(group)">DELETE</button>
     </div>
 
   </div>

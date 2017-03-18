@@ -14,7 +14,7 @@ app.controller('GroupsCtrl', function($scope, $mdDialog, sessionService,proxySer
             targetEvent: ev,
             clickOutsideToClose:true
         }).then(function(group) {
-
+            $scope.groups.push(group);
         }, function() {
 
         });
@@ -22,14 +22,16 @@ app.controller('GroupsCtrl', function($scope, $mdDialog, sessionService,proxySer
     };
 
     $scope.deleteGroup = function (group) {
-        console.log(group);
+        var box = confirm('Are you sure you want delete this group?');
+        // if (box) {
+        //
+        //     proxyService.deleteGroup({fileid: file._id}).then(function (response) {
+        //         $scope.files.splice($scope.files.indexOf(file), 1);
+        //     });
+        //
+        // }
     };
 
-    $scope.selectItem = function (index) {
-
-        angular.element('#' + index).append('gregergerg');
-
-    };
 
     /** ------------ Main functions ------------ **/
     getGroups(User);
@@ -49,6 +51,7 @@ app.controller('GroupsCtrl', function($scope, $mdDialog, sessionService,proxySer
     function DialogController($scope, $mdDialog, proxyService) {
 
         $scope.emails = [];
+        $scope.isExist = false;
 
         $scope.hide = function() {
             $mdDialog.hide();
@@ -67,8 +70,12 @@ app.controller('GroupsCtrl', function($scope, $mdDialog, sessionService,proxySer
             delete group.user.token;
 
             proxyService.createGroup(group).then(function(response) {
-                console.log(response);
-                $mdDialog.hide(group);
+                if (response.data.success){
+                    $mdDialog.hide(group);
+                } else {
+                    $scope.isExist = true;
+                }
+
             },function(error) {
 
             });

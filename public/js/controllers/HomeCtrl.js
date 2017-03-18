@@ -44,8 +44,6 @@ app.controller('HomeCtrl', function($scope, $location, sessionService, proxyServ
 
     /** ------------ Delete file ------------ **/
     $scope.deleteFile = function (file) {
-        console.log(file);
-
         var box = confirm('Are you sure you want to delete this file?');
         if (box) {
 
