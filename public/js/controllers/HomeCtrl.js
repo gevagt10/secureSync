@@ -42,8 +42,23 @@ app.controller('HomeCtrl', function($scope, $location, sessionService, proxyServ
 
     };
 
-    /** ------------ Delete file ------------ **/
+    $scope.download = function(file) {
+        //console.log({ fileid: file._id });
+
+        file.downloadFile({});
+        proxyService.downloadFile({ fileid: file._id }).then(function(response){
+            // var blob = new Blob([data], {});
+            // var fileName = headers('content-disposition');
+            // saveAs(blob, fileName);
+            console.log(response);
+        },function(error){
+
+        });
+    };
+
+    // Delete
     $scope.deleteFile = function (file) {
+        console.log(file);
         var box = confirm('Are you sure you want to delete this file?');
         if (box) {
 

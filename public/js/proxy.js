@@ -48,6 +48,16 @@ app.factory('proxyService', function($http, $q) {
         return deferred.promise;
     };
 
+    var downloadFile = function (data) {
+        var deferred = $q.defer();
+        $http.post(url + 'files/download' ,data).then(function(response) {
+            deferred.resolve(response);
+        }).catch(function(data, status, headers, config) {
+            deferred.reject(data);
+        });
+        return deferred.promise;
+    };
+
     /** ------------------------------------------------------------ **/
     /** -------------------- Password functions -------------------- **/
     /** ------------------------------------------------------------ **/
@@ -154,6 +164,7 @@ app.factory('proxyService', function($http, $q) {
         register: register,
         authenticate: authenticate,
         getFiles:getFiles,
+        downloadFile:downloadFile,
         deleteFile: deleteFile,
         getPasswordDetilas:getPasswordDetilas,
         createPasswordPolicy:createPasswordPolicy,

@@ -25,6 +25,7 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage });
 
+/** Get all files **/
 router.post('/get', function (req, res) {
 
     File.find({ 'user._id': req.body.userid },function(err, files) {
@@ -39,99 +40,95 @@ router.post('/get', function (req, res) {
 
 });
 
-router.post('/delete', function (req, res) {
-
-    File.findOne({ _id: req.body.fileid }, function (err, file) {
-
+/** Download file **/
+router.post('/download', function (req, res) {
+    //console.log(req.body.fileid);
+    // var fileToSend = fs.readFileSync(filePath);
+    File.findOne({_id: req.body.fileid}, function (err, file) {
         if (file) {
+            var fileToSend = fs.readFileSync(file.path + file.name);
+            //console.log(file.path + file.name);
+            return res.download(file.path + file.name);
+            // return res.json({
+            //     success: true
+            // });
+        } else {
+            return res.json({
+                success: false
+            });
+        }
+    });
+});
 
-            File.remove({ _id: req.body.fileid }, function(err) {
-
+/** Delete file **/
+router.post('/delete', function (req, res) {
+    File.findOne({_id: req.body.fileid}, function (err, file) {
+        if (file) {
+            File.remove({_id: req.body.fileid}, function (err) {
                 if (err) {
-
                     return res.json({
                         success: false
                     });
-
                 } else {
-
                     fs.unlink(path + file.name, function () {
                         if (err) throw err;
 
                         return res.json({
                             success: true
                         });
-
                     });
-
                 }
-
             });
-
         } else {
-
             return res.json({
                 success: false
             });
-
         }
-
     });
-
     /*
-    File.remove({ _id: req.body.fileid }, function(err) {
+     File.remove({ _id: req.body.fileid }, function(err) {
 
-        if (err) {
+     if (err) {
 
-            return res.json({
-                success: false
-            });
+     return res.json({
+     success: false
+     });
 
-        } else {
+     } else {
 
-            fs.unlink('/tmp/hello', function () {
-                if (err) throw err;
+     fs.unlink('/tmp/hello', function () {
+     if (err) throw err;
 
-                return res.json({
-                    success: true
-                });
+     return res.json({
+     success: true
+     });
 
-            });
+     });
 
-        }
+     }
 
-    });
-    */
-
+     });
+     */
 });
 
+/** Upload file **/
 router.post('/upload', upload.single('file'), function (req, res) {
-
     // Check if file exist
-    File.findOne({ name: req.file.originalname }, function (err, file) {
-
+    File.findOne({name: req.file.originalname}, function (err, file) {
         if (file) {
-
             return res.json({
                 success: false
             });
-
         } else {
-
             // Encrypt files
             encryptor.encryptFile(path + req.file.filename, path + req.file.filename, key, options, function (err) {
-
                 if (err) {
-
                     return res.json({
                         success: false
                     });
-
                 } else {
-
                     delete req.body.user.password;
                     delete req.body.user.token;
-
                     File.create({
                         name: req.file.originalname,
                         user: req.body.user,
@@ -145,15 +142,10 @@ router.post('/upload', upload.single('file'), function (req, res) {
                             });
                         }
                     });
-
                 }
-
             });
-
         }
-
     });
-
 });
 
 module.exports = router;
