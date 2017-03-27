@@ -45,12 +45,13 @@ app.controller('HomeCtrl', function($scope, $location, sessionService, proxyServ
     $scope.download = function(file) {
         //console.log({ fileid: file._id });
 
-        file.downloadFile({});
         proxyService.downloadFile({ fileid: file._id }).then(function(response){
             // var blob = new Blob([data], {});
             // var fileName = headers('content-disposition');
             // saveAs(blob, fileName);
-            console.log(response);
+            window.location.href = 'http://localhost:3000/api/files/download/' + response.data.filename;
+            //window.open('http://localhost:3000/download/' + response.data.filename);
+            //console.log(response);
         },function(error){
 
         });

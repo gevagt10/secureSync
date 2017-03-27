@@ -45,8 +45,10 @@ app.use(function(req,res,next) {
 });
 
 // Routing
-app.use('/', auth);
 app.use('/api', api);
+app.use('/', auth);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

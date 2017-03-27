@@ -1,9 +1,11 @@
 var express  = require('express');
 var router   = express.Router();
-
+var fs = require('fs');
 var jwt      = require('jsonwebtoken');
 var config   = require('../config/config');
 var User     = require('../models/user');
+var path = '../uploads/';
+var mime = require('mime');
 
 // Login
 router.post('/authenticate', function(req,res) {
@@ -68,6 +70,7 @@ router.post('/register', function(req,res) {
 
 /* ANY GET */
 router.get('/*', function(req, res) {
+    console.log("ANY GET");
     var path = __dirname.replace('routes', '');
     res.sendFile(path + '/public/index.html');
 });
