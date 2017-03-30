@@ -43,17 +43,12 @@ router.post('/get', function (req, res) {
 
 /** Check file before download file **/
 router.post('/download', function (req, res) {
-    //console.log(req.body.fileid);
-    // var fileToSend = fs.readFileSync(filePath);
     File.findOne({_id: req.body.fileid}, function (err, file) {
         if (file) {
             return res.json({
                 success: true,
                 filename: file.name
             });
-            // var filename = path + file.name;
-            // console.log(filename);
-            // return res.download(filename);
         } else {
             return res.json({
                 success: false
@@ -65,60 +60,37 @@ router.post('/download', function (req, res) {
 // Download File
 router.get('/download/:filename', function (req, res,next) {
     var filename = path + req.params.filename;
-    console.log(filename);
+    // Change suffix file to DAT
     var customFile = filename.substr(0, filename.lastIndexOf(".")) + ".dat";
-    //res.download(filename);
-    encryptor.decryptFile(customFile, '../uploads/fr.jpg', key, option, function (err) {
-        if (err) {
-            console.log("ERROR");
-            return res.json({
-                success: false,
-                message: 'File not found.'
-            });
-        } else {
-            res.download('../uploads/fr.jpg');
-        }
+    if (fs.existsSync(customFile)) {
+        encryptor.decryptFile(customFile, filename, key, option, function (err) {
+            if (err) {
+                console.log("ERROR");
+                return res.json({
+                    success: false,
+                    message: 'File not found.'
+                });
+            } else {
+                // Callback for file download
+                res.download(filename, function(err){
+                    if (err) {
+                        return res.json({
+                            success: false
+                        });
+                    } else {
+                        fs.unlink(filename);
+                    }
+                });
+            }
 
-    });
-    //res.download(filename);
-    //return res.download(filename);
-    //var file = fs.createWriteStream(filename);
-    // if (fs.existsSync(filename)) {
-    //     fs.readFile(filename, function (error, pgResp) {
-    //         if (!error) {
-    //             //console.log("dfdfd");
-    //             //res.writeHead(200, { 'Content-Type': mime.lookup(filename) });
-    //             //res.write(pgResp);
-    //             res.download(filename);
-    //             // encryptor.decryptFile(filename, '../uploads/sec.jpg', key, options, function(err) {
-    //             //     if (err) {
-    //             //         console.log("ERROR");
-    //             //         return res.json({
-    //             //             success: false,
-    //             //             message: 'File not found.'
-    //             //         });
-    //             //     } else {
-    //             //         res.download('../uploads/sec.jpg');
-    //             //     }
-    //             //
-    //             // });
-    //
-    //             //next();
-    //         }
-    //         //res.end();
-    //     });
-    // } else {
-    //     return res.json({
-    //         success: false,
-    //         message: 'File not found.'
-    //     });
-    // }
+        });
+    } else {
+        return res.json({
+            success: false,
+            message: 'File not found.'
+        });
+    }
 });
-
-
-
-
-
 
 
 /** Delete file **/
@@ -131,7 +103,9 @@ router.post('/delete', function (req, res) {
                         success: false
                     });
                 } else {
-                    fs.unlink(path + file.name, function () {
+                    var filename =  path + file.name;
+                    var customFile = filename.substr(0, filename.lastIndexOf(".")) + ".dat";
+                    fs.unlink(customFile, function () {
                         if (err) throw err;
 
                         return res.json({
@@ -183,7 +157,6 @@ router.post('/upload', upload.single('file'), function (req, res) {
         } else {
             var filename = path + req.file.filename;
             var customFile = filename.substr(0, filename.lastIndexOf(".")) + ".dat";
-            console.log(customFile);
             if (fs.existsSync(filename)) {
                 // Encrypt files
                 encryptor.encryptFile(filename, customFile, key, option, function (err) {
@@ -201,6 +174,9 @@ router.post('/upload', upload.single('file'), function (req, res) {
                             size: req.file.size
                         }, function (err, newFile) {
                             if (newFile) {
+                                // Delete regular file
+                                fs.unlink(filename);
+                                // Return notice to user
                                 return res.json({
                                     success: true,
                                     file: newFile
