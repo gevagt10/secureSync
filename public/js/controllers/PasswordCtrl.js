@@ -56,7 +56,7 @@ app.controller('PasswordCtrl', function($scope,$mdDialog,proxyService,sessionSer
     // Get static options for dialog popup - create new policy
     function getPasswordDetilas(User){
         proxyService.getPasswordDetilas(User).then(function(response){
-            console.log(response);
+            //console.log(response);
             dialogService.setPassword(response.data);
         },function(error){
 

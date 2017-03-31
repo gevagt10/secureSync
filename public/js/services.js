@@ -66,8 +66,19 @@ app.factory('dialogService', function() {
     function setPassword(policy) {
         _passwordPolicy = policy;
     }
+
+    var _file = {};
+    function getFile(){
+        return _file;
+    }
+    function setFile(file) {
+        _file = file;
+    }
+
     return{
         getPassword:getPassword,
-        setPassword:setPassword
+        setPassword:setPassword,
+        setFile:setFile,
+        getFile:getFile
     }
 });

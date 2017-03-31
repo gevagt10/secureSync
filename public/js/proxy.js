@@ -160,9 +160,9 @@ app.factory('proxyService', function($http, $q) {
         return deferred.promise;
     };
 
-    var getGroups = function (group) {
+    var getGroups = function (user) {
         var deferred = $q.defer();
-        $http.post(url + 'getGroups', group).then(function(response) {
+        $http.post(url + 'getGroups', user).then(function(response) {
             deferred.resolve(response);
         }).catch(function(data, status, headers, config) {
             deferred.reject(data);

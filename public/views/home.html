@@ -49,7 +49,7 @@
             <td ng-bind="file.name"></td>
             <td ng-bind="file.user.name"></td>
             <td ng-bind="file.size | filesize"></td>
-            <td><button class="btn btn-primary">SHARE</button></td>
+            <td><button class="btn btn-primary" ng-click="share(file,$event)">SHARE</button></td>
             <td><button class="btn btn-success" ng-click="download(file)">DOWNLOAD</button></td>
             <td><button class="btn btn-danger" ng-click="deleteFile(file)">DELETE</button></td>
           </tr>

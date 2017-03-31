@@ -1,5 +1,5 @@
 // Home controller
-app.controller('HomeCtrl', function($scope, $location, sessionService, cookieService, proxyService, Upload) {
+app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService, cookieService,dialogService, proxyService, Upload) {
 
     // User session
     var User = sessionService.get('user');
@@ -33,7 +33,9 @@ app.controller('HomeCtrl', function($scope, $location, sessionService, cookieSer
             url: 'api/files/upload',
             data:{file:file,user:User}
         }).then(function (response) {
-            $scope.files.push(response.data.file);
+            if (response.data.success) {
+                $scope.files.push(response.data.file);
+            }
         }, function (evt) {
             var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
             console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
@@ -41,6 +43,7 @@ app.controller('HomeCtrl', function($scope, $location, sessionService, cookieSer
         });
     };
 
+    // Download event
     $scope.download = function(file) {
         proxyService.downloadFile({ fileid: file._id }).then(function(response){
 
@@ -66,10 +69,71 @@ app.controller('HomeCtrl', function($scope, $location, sessionService, cookieSer
             proxyService.deleteFile({ fileid: file._id }).then(function(response) {
                 $scope.files.splice($scope.files.indexOf(file), 1);
             });
-
         }
+    };
 
+    // Share
+    $scope.share = function(file,ev) {
+        // Pass file to dialog service
+        dialogService.setFile(file);
+        // Popup file sharing
+        $mdDialog.show({
+            controller: DialogController,
+            templateUrl: 'views/dialog/dialog-share.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose:true
+        }).then(function(group) {
+            //$scope.groups.push(group);
+        }, function() {
+
+        });
+    };
+
+
+    /** ------------ dialog functions ------------ **/
+    function DialogController($scope, $mdDialog, proxyService) {
+
+        $scope.groups = [];
+        $scope.file = dialogService.getFile();
+
+        $scope.hide = function() {
+            $mdDialog.hide();
+        };
+
+        $scope.cancel = function() {
+            $mdDialog.cancel();
+        };
+
+        // $scope.save = function(group) {
+        //     delete group.email;
+        //     //group.name = group.name.toLowerCase();
+        //     group.user = User;
+        //     group.emails = $scope.emails;
+        //
+        //     delete group.user.token;
+        //
+        //     proxyService.createGroup(group).then(function(response) {
+        //         if (response.data.success){
+        //             $mdDialog.hide(group);
+        //         } else {
+        //             $scope.isExist = true;
+        //         }
+        //     },function(error) {
+        //
+        //     });
+        // };
+
+        // Async function - get groups
+        proxyService.getGroups(User).then(function(response){
+            $scope.groups = response.data.groups;
+        },function(error){
+
+        });
     }
+
+
+
 
 }).filter( 'filesize', function () {
 

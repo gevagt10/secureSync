@@ -1,37 +1,37 @@
-var express  = require('express');
-var router   = express.Router();
+var express = require('express');
+var router = express.Router();
 
 var multer = require('multer');
-var jwt      = require('jsonwebtoken');
+var jwt = require('jsonwebtoken');
 
 // Models
 //var User     = require('../models/user');
-var File     = require('../models/file');
+var File = require('../models/file');
 
 // Encrypt files
 var fs = require('fs');
 var encryptor = require('file-encryptor');
 var key = 'fdfdfdfdf';
-var option = { algorithm : 'aes256' };
+var option = {algorithm: 'aes256'};
 var path = '../uploads/';
-var config   = require('../config/config');
+var config = require('../config/config');
 
 
 var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path)
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  }
+    destination: function (req, file, cb) {
+        cb(null, path)
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
 });
 
-var upload = multer({ storage: storage });
+var upload = multer({storage: storage});
 
 /** Get all files **/
 router.post('/get', function (req, res) {
 
-    File.find({ 'user._id': req.body.userid },function(err, files) {
+    File.find({'user._id': req.body.userid}, function (err, files) {
         if (err) throw err;
 
         return res.json({
@@ -42,8 +42,6 @@ router.post('/get', function (req, res) {
     });
 
 });
-
-
 
 
 /** Check file before download file **/
@@ -57,7 +55,7 @@ router.post('/download', function (req, res) {
             return res.json({
                 success: true,
                 filename: file.name,
-                token:token
+                token: token
             });
         } else {
             return res.json({
@@ -68,7 +66,7 @@ router.post('/download', function (req, res) {
 });
 
 // Download File
-router.get('/download/:filename/:token', function (req, res,next) {
+router.get('/download/:filename/:token', function (req, res, next) {
     var filename = path + req.params.filename;
     // Change suffix file to DAT
     var customFile = filename.substr(0, filename.lastIndexOf(".")) + ".dat";
@@ -82,7 +80,7 @@ router.get('/download/:filename/:token', function (req, res,next) {
                 });
             } else {
                 // Callback for file download
-                res.download(filename, function(err){
+                res.download(filename, function (err) {
                     if (err) {
                         return res.json({
                             success: false
@@ -113,7 +111,7 @@ router.post('/delete', function (req, res) {
                         success: false
                     });
                 } else {
-                    var filename =  path + file.name;
+                    var filename = path + file.name;
                     var customFile = filename.substr(0, filename.lastIndexOf(".")) + ".dat";
                     fs.unlink(customFile, function () {
                         if (err) throw err;
