@@ -2,6 +2,7 @@ var express  = require('express');
 var router   = express.Router();
 
 var multer = require('multer');
+var jwt      = require('jsonwebtoken');
 
 // Models
 //var User     = require('../models/user');
@@ -13,7 +14,8 @@ var encryptor = require('file-encryptor');
 var key = 'fdfdfdfdf';
 var option = { algorithm : 'aes256' };
 var path = '../uploads/';
-var pa = require("path");
+var config   = require('../config/config');
+
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -41,13 +43,21 @@ router.post('/get', function (req, res) {
 
 });
 
+
+
+
 /** Check file before download file **/
 router.post('/download', function (req, res) {
     File.findOne({_id: req.body.fileid}, function (err, file) {
+        // Genrate temp token for files
+        var token = jwt.sign({file: 'file'}, config.fileSecret, {
+            expiresIn: '10s'
+        });
         if (file) {
             return res.json({
                 success: true,
-                filename: file.name
+                filename: file.name,
+                token:token
             });
         } else {
             return res.json({
@@ -58,7 +68,7 @@ router.post('/download', function (req, res) {
 });
 
 // Download File
-router.get('/download/:filename', function (req, res,next) {
+router.get('/download/:filename/:token', function (req, res,next) {
     var filename = path + req.params.filename;
     // Change suffix file to DAT
     var customFile = filename.substr(0, filename.lastIndexOf(".")) + ".dat";
@@ -146,6 +156,7 @@ router.post('/delete', function (req, res) {
      */
 });
 
+
 /** Upload file **/
 router.post('/upload', upload.single('file'), function (req, res) {
     //Check if file exist
@@ -189,6 +200,7 @@ router.post('/upload', upload.single('file'), function (req, res) {
         }
     });
 });
+
 
 module.exports = router;
 

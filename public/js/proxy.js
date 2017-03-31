@@ -58,6 +58,16 @@ app.factory('proxyService', function($http, $q) {
         return deferred.promise;
     };
 
+    // var download = function (file) {
+    //     var deferred = $q.defer();
+    //     $http.get(url + 'files/download/' + file).then(function(response) {
+    //         deferred.resolve(response);
+    //     }).catch(function(data, status, headers, config) {
+    //         deferred.reject(data);
+    //     });
+    //     return deferred.promise;
+    // };
+
     /** ------------------------------------------------------------ **/
     /** -------------------- Password functions -------------------- **/
     /** ------------------------------------------------------------ **/

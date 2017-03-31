@@ -39,6 +39,25 @@ app.factory('sessionService', function(localStorageService) {
     }
 });
 
+// Storage Service
+app.factory('cookieService', function($cookieStore) {
+
+    return {
+        set: function(key, value) {
+            return $cookieStore.put(key, value);
+        },
+        get: function(key) {
+            return $cookieStore.get(key);
+        },
+        update: function(key, obj) {
+            $cookieStore.put(key, angular.extend($cookieStore.get(key), obj));
+        },
+        destroy: function(key) {
+            return $cookieStore.remove(key);
+        }
+    }
+});
+
 app.factory('dialogService', function() {
     var _passwordPolicy = {};
     function getPassword(){

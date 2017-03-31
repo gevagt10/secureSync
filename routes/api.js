@@ -11,27 +11,48 @@ var Group    = require('../models/group');
 var Files    = require('../routes/files');
 
 /* MIDDLEWARE */
-// router.use(function (req, res, next) {
-//     var token = req.body.token || req.query.token || req.headers['x-access-token'];
-//     if (token) {
-//         jwt.verify(token, config.secret, function (err, decoded) {
-//             if (err) {
-//                 return res.status(401).send({
-//                     success: false,
-//                     message: 'Failed to authenticate token.'
-//                 });
-//             } else {
-//                 req.decoded = decoded;
-//                 next();
-//             }
-//         });
-//     } else {
-//         return res.status(403).send({
-//             success: false,
-//             message: 'No token provided.'
-//         });
-//     }
-// });
+router.use(function (req, res, next) {
+    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+    if (token) {
+        jwt.verify(token, config.secret, function (err, decoded) {
+            if (err) {
+                return res.status(401).send({
+                    success: false,
+                    message: 'Failed to authenticate token.'
+                });
+
+            } else {
+                req.decoded = decoded;
+                next();
+            }
+        });
+    } else { // Check if request is a file for download
+        var fileToken = JSON.parse(req.cookies.token);
+        if (fileToken) {
+            jwt.verify(fileToken, config.fileSecret, function (err, decoded) {
+                if (err) {
+                    return res.status(403).send({
+                        success: false,
+                        message: 'No token provided.'
+                    });
+                }
+                req.decoded = decoded;
+                next();
+            });
+        }   else {
+            return res.status(403).send({
+                success: false,
+                message: 'No token provided.'
+            });
+        }
+
+
+
+    }
+});
+
+
+
 
 // Files
 router.use('/files', Files);

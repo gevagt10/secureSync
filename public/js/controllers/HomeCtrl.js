@@ -1,5 +1,5 @@
 // Home controller
-app.controller('HomeCtrl', function($scope, $location, sessionService, proxyService, Upload) {
+app.controller('HomeCtrl', function($scope, $location, sessionService, cookieService, proxyService, Upload) {
 
     // User session
     var User = sessionService.get('user');
@@ -39,22 +39,22 @@ app.controller('HomeCtrl', function($scope, $location, sessionService, proxyServ
             console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
             $scope.status = 'progress: ' + progressPercentage + '% ';
         });
-
     };
 
     $scope.download = function(file) {
-        //console.log({ fileid: file._id });
-
         proxyService.downloadFile({ fileid: file._id }).then(function(response){
-            // var blob = new Blob([data], {});
-            // var fileName = headers('content-disposition');
-            // saveAs(blob, fileName);
-            window.location.href = 'http://localhost:3000/api/files/download/' + response.data.filename;
-            //window.open('http://localhost:3000/download/' + response.data.filename);
-            //console.log(response);
+
+            var fileToken = response.data.token;
+            // Send token to remote server
+            cookieService.set('token',fileToken);
+            // Download file
+            window.location.href = 'http://localhost:3000/api/files/download/' + response.data.filename + '/' + fileToken;
+
         },function(error){
 
         });
+        // Remove token
+        //cookieService.destroy('token');
     };
 
     // Delete

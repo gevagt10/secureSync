@@ -70,7 +70,7 @@ router.post('/register', function(req,res) {
 
 /* ANY GET */
 router.get('/*', function(req, res) {
-    console.log("ANY GET");
+    //console.log("ANY GET");
     var path = __dirname.replace('routes', '');
     res.sendFile(path + '/public/index.html');
 });

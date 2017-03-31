@@ -3,7 +3,8 @@ var app = angular.module('secureSync', [
     'LocalStorageModule',
     'ngMessages',
     'ngMaterial',
-    'ngFileUpload'
+    'ngFileUpload',
+    'ngCookies'
 ]);
 
 app.config(function($routeProvider,$locationProvider) {
@@ -80,7 +81,8 @@ app.config(function($routeProvider,$locationProvider) {
     .when('/logout', {
 
         resolve: {
-            logout: function ($location, sessionService) {
+            logout: function ($location, sessionService,cookieService) {
+                cookieService.destroy('token');
                 sessionService.destroy();
                 $location.path('/');
             }
