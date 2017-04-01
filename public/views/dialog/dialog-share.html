@@ -12,22 +12,35 @@
 
         <md-dialog-content>
             <div class="md-dialog-content">
-                <div ng-if="isExist" class="alert alert-danger fade in">
+                <div ng-if="false" class="alert alert-danger fade in">
                     <strong>Failad!</strong> Name already exist.
+                </div>
+                <div ng-if="false" class="alert alert-success fade in">
+                    <strong>success!</strong> share file.
                 </div>
                 <div class="form-group">
                     <label>Name:</label>
                     <h4>{{file.name}}</h4>
                 </div>
+
+                <!-- Security -->
+                <div class="form-group">
+                    <label>Security policy:</label>
+                    <select name="security" id="security" class="form-control" tabindex="1"
+                            ng-options="security.name for security in securityPolicies"
+                            ng-model="share.security" required>
+                    </select>
+                </div>
+
                 <!-- Groups -->
                 <div class="form-group">
                     <label>Groups:</label>
                     <div class="form-inline">
-                        <select name="groups" id="groups" class="form-control" tabindex="1"
+                        <select name="groups" id="group" class="form-control" tabindex="2"
                                 ng-options="group.name for group in groups"
-                                ng-model="share.group" required>
+                                ng-model="group" required>
                         </select>
-                        <button class="btn btn-success" ng-click="add()">Add</button>
+                        <button class="btn btn-success" ng-click="addGroup(group)">Add</button>
                     </div>
                 </div>
 
@@ -35,21 +48,22 @@
                 <div class="form-group">
                     <label>Email:</label>
                     <div class="form-inline">
-                        <input type="email" class="form-control" name="Email" ng-model="group.email" tabindex="2"
-                               placeholder="Name" required autofocus />
-                        <button class="btn btn-success" ng-click="add(group.email)">Add</button>
+                        <input type="email" class="form-control" name="Email" ng-model="email" tabindex="2"
+                               placeholder="Name" autofocus />
+                        <button class="btn btn-success" ng-click="addEmail(email)">Add</button>
                     </div>
                 </div>
 
-                <!--<div class="form-group form-mail-list">-->
-                    <!--<label>Emails:</label>-->
-                    <!--<div ng-repeat="email in emails track by $index" style="margin-bottom: 5px">-->
-                        <!--<div class="form-inline" style="display: flex">-->
-                            <!--<span style="padding: 10px 0; width: 100%">{{email}}</span>-->
-                            <!--<button class="btn btn-danger" ng-click="delete(email)">remove</button>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
+                <!-- Email List -->
+                <div class="form-group form-mail-list">
+                    <label>Emails:</label>
+                    <div ng-repeat="email in selectedEmails track by $index" style="margin-bottom: 5px">
+                        <div class="form-inline" style="display: flex">
+                            <span style="padding: 10px 0; width: 100%">{{email}}</span>
+                            <button class="btn btn-danger" ng-click="removeEmail(email)">remove</button>
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </md-dialog-content>
@@ -59,7 +73,7 @@
             <md-button ng-click="cancel()">
                 Cancel
             </md-button>
-            <md-button ng-click="save()" tabindex="4">
+            <md-button ng-click="save(share)" tabindex="4">
                 Save
             </md-button>
         </md-dialog-actions>

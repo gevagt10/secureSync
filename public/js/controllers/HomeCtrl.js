@@ -94,8 +94,14 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
     /** ------------ dialog functions ------------ **/
     function DialogController($scope, $mdDialog, proxyService) {
 
+        // Varibels
         $scope.groups = [];
+        $scope.emails = [];
+        $scope.selectedEmails = [];
+
         $scope.file = dialogService.getFile();
+
+        //var share = {};
 
         $scope.hide = function() {
             $mdDialog.hide();
@@ -105,6 +111,42 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
             $mdDialog.cancel();
         };
 
+        // Remove email from form email list
+        $scope.removeEmail = function (email) {
+            var index = $scope.selectedEmails.indexOf(email);
+            if (index > -1) {
+                $scope.selectedEmails.splice(index, 1);
+            }
+        };
+
+        $scope.addGroup = function(group) {
+            //console.log(group);
+            angular.forEach(group.emails,function(key,val){
+                addSelectedEmails(key);
+            });
+        };
+
+        $scope.addEmail = function(email) {
+            addSelectedEmails(email);
+
+        };
+
+        // Save dialog details
+        $scope.save = function(share) {
+            //var share = {};
+            share.selectedEmails = $scope.selectedEmails;
+            share.file =  $scope.file;
+
+            //$mdDialog.hide(group);
+        };
+
+
+        /** ------------ functions ------------ **/
+        function addSelectedEmails(email) {
+            if ($scope.selectedEmails.indexOf(email) == -1) {
+                $scope.selectedEmails.push(email);
+            }
+        }
         // $scope.save = function(group) {
         //     delete group.email;
         //     //group.name = group.name.toLowerCase();
@@ -124,9 +166,16 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
         //     });
         // };
 
+        /** ------------ Async ------------ **/
         // Async function - get groups
         proxyService.getGroups(User).then(function(response){
             $scope.groups = response.data.groups;
+        },function(error){
+
+        });
+
+        proxyService.getSecurityPolicies(User).then(function(response){
+            $scope.securityPolicies = response.data;
         },function(error){
 
         });
