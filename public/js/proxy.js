@@ -58,15 +58,15 @@ app.factory('proxyService', function($http, $q) {
         return deferred.promise;
     };
 
-    // var download = function (file) {
-    //     var deferred = $q.defer();
-    //     $http.get(url + 'files/download/' + file).then(function(response) {
-    //         deferred.resolve(response);
-    //     }).catch(function(data, status, headers, config) {
-    //         deferred.reject(data);
-    //     });
-    //     return deferred.promise;
-    // };
+    var shareFile = function (data) {
+        var deferred = $q.defer();
+        $http.post(url + 'files/shareFile', data).then(function(response) {
+            deferred.resolve(response);
+        }).catch(function(data, status, headers, config) {
+            deferred.reject(data);
+        });
+        return deferred.promise;
+    };
 
     /** ------------------------------------------------------------ **/
     /** -------------------- Password functions -------------------- **/
@@ -170,6 +170,7 @@ app.factory('proxyService', function($http, $q) {
         return deferred.promise;
     };
 
+
     return {
         register: register,
         authenticate: authenticate,
@@ -184,7 +185,8 @@ app.factory('proxyService', function($http, $q) {
         getSecurityPolicies:getSecurityPolicies,
         removeSecurityPolicy:removeSecurityPolicy,
         createGroup: createGroup,
-        getGroups:getGroups
+        getGroups:getGroups,
+        shareFile:shareFile
     }
 
 });

@@ -30,17 +30,13 @@ var upload = multer({storage: storage});
 
 /** Get all files **/
 router.post('/get', function (req, res) {
-
     File.find({'user._id': req.body.userid}, function (err, files) {
         if (err) throw err;
-
         return res.json({
             success: true,
             files: files
         });
-
     });
-
 });
 
 
@@ -199,6 +195,31 @@ router.post('/upload', upload.single('file'), function (req, res) {
     });
 });
 
+/**Share file **/
+router.post('/shareFile', function (req, res) {
+    //console.log(req.body);
+
+    File.findOne({'_id': req.body.file._id}, function (err, file) {
+        if (err) throw err;
+        if(file) {
+            console.log(req.body.emails);
+            File.update({_id:file._id},{"security":req.body.security,emails:req.body.emails},{upsert: true},function(err,records){
+                if (err) throw err;
+                console.log(records);
+                return res.json({
+                    success: true
+                });
+            });
+        }
+
+
+
+        // File.insert({"security":req.body.security},function(err,f){
+        //
+        // })
+
+    });
+});
 
 module.exports = router;
 

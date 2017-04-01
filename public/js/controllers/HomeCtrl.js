@@ -128,14 +128,25 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
 
         $scope.addEmail = function(email) {
             addSelectedEmails(email);
-
         };
+
 
         // Save dialog details
         $scope.save = function(share) {
             //var share = {};
-            share.selectedEmails = $scope.selectedEmails;
-            share.file =  $scope.file;
+
+            if (User._id==$scope.file.user._id) {
+                share.emails = $scope.selectedEmails;
+                share.file =  $scope.file;
+
+                proxyService.shareFile(share).then(function(response){
+                    console.log(response);
+
+                },function(error){
+
+                })
+            }
+
 
             //$mdDialog.hide(group);
         };
@@ -179,6 +190,7 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
         },function(error){
 
         });
+
     }
 
 
