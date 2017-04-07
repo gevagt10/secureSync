@@ -1,0 +1,57 @@
+<div class="profile container">
+    <div class="row">
+        <div ng-if="isSuccess" class="alert alert-success fade in">
+            <strong>success!</strong> profile saves.
+        </div>
+        <div class="col-md-6 text-center left">
+          <span ng-if="true">
+            <img src="../images/profile.png">
+          </span>
+        </div>
+
+        <div class="col-md-6 right">
+
+            <form name="profileForm" ng-submit="saveProfile(user)" novalidate>
+                <div class="alert alert-{{ alert }}" ng-class="{ 'animated bounceIn': animated }" role="alert"
+                     ng-show="animated" ng-bind="message"></div>
+
+                <div class="form-group">
+                    <label ng-class="{ 'error': profileForm.name.$invalid && profileForm.$submitted }">
+                        Name:</label>
+                    <input type="text" name="name" ng-model="user.name" ng-disabled="disabled" class="form-control"
+                           tabindex="1" placeholder="Name" required/>
+                </div>
+
+                <div class="form-group">
+                    <label ng-class="{ 'error': profileForm.email.$invalid && profileForm.$submitted }">
+                        Email:</label>
+                    <input type="text" name="email" ng-model="user.email" ng-disabled="true" class="form-control"
+                           tabindex="2" placeholder="Email" required/>
+                </div>
+
+                <div class="form-group">
+                    <label ng-class="{ 'error': profileForm.password.$invalid && profileForm.$submitted }">Password:
+                    </label>
+                    <input type="password" name="password" ng-model="user.password"
+                           class="form-control" tabindex="3" placeholder="Password"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm" ng-class="{ 'error': profileForm.confirm.$invalid && profileForm.$submitted }">Confirm
+                        Password:</label>
+                    <input type="password" name="confirm" id="confirm" ng-model="user.confirm" class="form-control"
+                           tabindex="4" ng-equal="user.password" placeholder="Confirm Password" required/>
+                    <div class="error" ng-show="profileForm.confirm.$error.verify && profileForm.confirm.$dirty">The
+                        passwords does not match.
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success" tabindex="5"
+                        ng-disabled="profileForm.$invalid">Save
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+</div>

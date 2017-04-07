@@ -72,6 +72,8 @@ router.post('/removeSecurityPolicy', function(req,res){removeSecurityPolicy(req,
 router.post('/createGroup', function(req,res){createGroup(req,res)});
 router.post('/getGroups', function(req,res){getGroups(req,res)});
 
+//Profile
+router.post('/updateProfile', function(req,res){updateProfile(req,res)});
 
 /**=====================================================**/
 /**                     Password                        **/
@@ -214,16 +216,34 @@ function createGroup(req, res) {
 
     });
 }
+
 function getGroups(req, res) {
-
-    Group.find({ 'user._id': req.body._id }, function (err, groups) {
+    Group.find({'user._id': req.body._id}, function (err, groups) {
         if (err) throw err;
-
         return res.json({
             success: true,
             groups: groups
         });
 
+    });
+}
+
+/** =====================================================**/
+/**                     Profile                         **/
+/** ==================================================== **/
+
+function updateProfile(req, res) {
+    console.log(req.body);
+    User.update({_id:req.body._id},{name:req.body.name,password:req.body.password},{upsert: true}, function (err, records) {
+        if (records) {
+            return res.json({
+                success: true
+            });
+        } else {
+            return res.json({
+                success: false
+            });
+        }
     });
 
 }

@@ -65,7 +65,6 @@ app.config(function($routeProvider,$locationProvider) {
         }
     })
     .when('/password', {
-
         title: 'Password policy',
         templateUrl: '../views/password.html',
         controller: 'PasswordCtrl',
@@ -76,10 +75,19 @@ app.config(function($routeProvider,$locationProvider) {
                 }
             }
         }
-
-    })
+    }).when('/profile', {
+            title: 'Profile',
+            templateUrl: '../views/profile.html',
+            controller: 'ProfileCtrl',
+            resolve: {
+                check: function ($location, sessionService) {
+                    if (!sessionService.get('user')) {
+                        $location.path('/');
+                    }
+                }
+            }
+        })
     .when('/logout', {
-
         resolve: {
             logout: function ($location, sessionService,cookieService) {
                 cookieService.destroy('token');

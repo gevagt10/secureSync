@@ -9,7 +9,7 @@
                     <span class="fileinput-new">Select file</span>
                     <span class="fileinput-exists">Change</span>
                     <input type="file" ngf-select ng-model="inputFile" name="file"
-                           accept="/*" ngf-max-size="4MB" required
+                           accept="/*" ngf-max-size="400MB" required
                            ngf-model-invalid="errorFile"/>
                 </span>
                 <span class="fileinput-filename"></span>
@@ -27,7 +27,7 @@
 
     <ul class="nav nav-tabs">
       <li role="presentation" ng-click="selectTab(1)" ng-class="{ 'active': currentTab == 1 }"><a href="#">My Files</a></li>
-      <li role="presentation" ng-click="selectTab(2)" ng-class="{ 'active': currentTab == 2 }"><a href="#">All Files</a></li>
+      <li role="presentation" ng-click="selectTab(2)" ng-class="{ 'active': currentTab == 2 }"><a href="#">Shared with me</a></li>
     </ul>
 
     <div ng-if="currentTab == 1">
@@ -39,16 +39,18 @@
             <th>Name</th>
             <th>Owner</th>
             <th>Size</th>
+            <th>Secuirty</th>
             <th>Share</th>
             <th>Download</th>
             <th>Delete</th>
           </tr>
 
-          <tr ng-repeat="file in files">
+          <tr ng-repeat="file in myFiles">
             <td ng-bind="$index+1"></td>
             <td ng-bind="file.name"></td>
             <td ng-bind="file.user.name"></td>
             <td ng-bind="file.size | filesize"></td>
+            <td ng-bind="file.security.name"></td>
             <td><button class="btn btn-primary" ng-click="share(file,$event)">SHARE</button></td>
             <td><button class="btn btn-success" ng-click="download(file)">DOWNLOAD</button></td>
             <td><button class="btn btn-danger" ng-click="deleteFile(file)">DELETE</button></td>
@@ -60,7 +62,39 @@
 
     <div ng-if="currentTab == 2">
 
-        All files
+        <table class="table table-bordered">
+
+            <tr>
+                <th>##</th>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Size</th>
+                <th>Pepole</th>
+                <th>Secuirty</th>
+                <th>Share</th>
+                <th>Download</th>
+                <th>Remove</th>
+            </tr>
+
+            <tr ng-repeat="file in shareFiles">
+                <td ng-bind="$index+1"></td>
+                <td ng-bind="file.name"></td>
+                <td ng-bind="file.user.name"></td>
+                <td ng-bind="file.size | filesize"></td>
+                <!--<td ng-bind="emails(file.emails)"></td>-->
+                <!--<td ng-bind="file.emails[0]"></td>-->
+                <td>
+                    <div ng-repeat="email in file.emails">
+                        {{email}}
+                    </div>
+                </td>
+                <td ng-bind="file.security.name"></td>
+                <td><button class="btn btn-primary" ng-click="share(file,$event)">SHARE</button></td>
+                <td><button class="btn btn-success" ng-click="download(file)">DOWNLOAD</button></td>
+                <td><button class="btn btn-danger" ng-click="removeSharedFile(file)">REMOVE</button></td>
+            </tr>
+
+        </table>
 
     </div>
 

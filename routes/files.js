@@ -30,12 +30,32 @@ var upload = multer({storage: storage});
 
 /** Get all files **/
 router.post('/get', function (req, res) {
-    File.find({'user._id': req.body.userid}, function (err, files) {
-        if (err) throw err;
-        return res.json({
-            success: true,
-            files: files
+    // File.find({'user._id': req.body.userid}, function (err, files) {
+    //     if (err) throw err;
+    //     return res.json({
+    //         success: true,
+    //         files: files
+    //     });
+    // });
+    var isError = false;
+    File.find({'user._id': req.body._id}, function (err, myFiles) {
+        if (err) isError=true;
+        // Check for shared files
+        //console.log(req.body);
+        File.find({emails:req.body.email},function(err,sharedFiles){
+            if (err) isError=true;
+            return res.json({
+                success: true,
+                myFiles: myFiles,
+                sharedFiles:sharedFiles
+            });
         });
+        if (isError) {
+            return res.json({
+                success: false
+            });
+        }
+
     });
 });
 
@@ -45,7 +65,7 @@ router.post('/download', function (req, res) {
     File.findOne({_id: req.body.fileid}, function (err, file) {
         // Genrate temp token for files
         var token = jwt.sign({file: 'file'}, config.fileSecret, {
-            expiresIn: '10s'
+            expiresIn: '5s'
         });
         if (file) {
             return res.json({
@@ -150,7 +170,20 @@ router.post('/delete', function (req, res) {
      */
 });
 
-
+router.post('/removeSharedFile', function (req, res) {
+    console.log(req.body);
+    // return res.json({
+    //     success: false
+    // });
+    File.update({_id:req.body.file._id},{$pull :{emails:req.body.user.email}}, function (err, records) {
+        if (records) {
+            return res.json({
+                success: true
+            });
+        }
+    });
+});
+// ({$and: [{name:"new.txt"},{size:'3451'}]})
 /** Upload file **/
 router.post('/upload', upload.single('file'), function (req, res) {
     //Check if file exist
@@ -198,26 +231,26 @@ router.post('/upload', upload.single('file'), function (req, res) {
 /**Share file **/
 router.post('/shareFile', function (req, res) {
     //console.log(req.body);
-
-    File.findOne({'_id': req.body.file._id}, function (err, file) {
+    // Check if file exists
+    File.findOne({'_id': req.body._id}, function (err, file) {
+        //console.log(file);
         if (err) throw err;
         if(file) {
-            console.log(req.body.emails);
+            //console.log(file);
             File.update({_id:file._id},{"security":req.body.security,emails:req.body.emails},{upsert: true},function(err,records){
                 if (err) throw err;
-                console.log(records);
+                //console.log(records);
                 return res.json({
                     success: true
                 });
             });
         }
-
-
-
         // File.insert({"security":req.body.security},function(err,f){
         //
         // })
-
+    });
+    return res.json({
+        success: true
     });
 });
 

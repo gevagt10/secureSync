@@ -1,4 +1,4 @@
-// Home controller
+// Password controller
 app.controller('PasswordCtrl', function($scope,$mdDialog,proxyService,sessionService,dialogService) {
 
     // User session

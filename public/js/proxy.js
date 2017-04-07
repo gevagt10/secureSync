@@ -68,6 +68,17 @@ app.factory('proxyService', function($http, $q) {
         return deferred.promise;
     };
 
+    var removeSharedFile = function (data) {
+        var deferred = $q.defer();
+        $http.post(url + 'files/removeSharedFile', data).then(function(response) {
+            deferred.resolve(response);
+        }).catch(function(data, status, headers, config) {
+            deferred.reject(data);
+        });
+        return deferred.promise;
+    };
+
+
     /** ------------------------------------------------------------ **/
     /** -------------------- Password functions -------------------- **/
     /** ------------------------------------------------------------ **/
@@ -170,6 +181,18 @@ app.factory('proxyService', function($http, $q) {
         return deferred.promise;
     };
 
+    /* ------------------------------------------------------------ */
+    /* ---------------------------- Profile ----------------------- */
+    /* ------------------------------------------------------------ */
+    var updateProfile = function (user) {
+        var deferred = $q.defer();
+        $http.post(url + 'updateProfile', user).then(function(response) {
+            deferred.resolve(response);
+        }).catch(function(data, status, headers, config) {
+            deferred.reject(data);
+        });
+        return deferred.promise;
+    };
 
     return {
         register: register,
@@ -177,6 +200,7 @@ app.factory('proxyService', function($http, $q) {
         getFiles:getFiles,
         downloadFile:downloadFile,
         deleteFile: deleteFile,
+        removeSharedFile:removeSharedFile,
         getPasswordDetilas:getPasswordDetilas,
         createPasswordPolicy:createPasswordPolicy,
         getPasswordPolicies:getPasswordPolicies,
@@ -186,7 +210,8 @@ app.factory('proxyService', function($http, $q) {
         removeSecurityPolicy:removeSecurityPolicy,
         createGroup: createGroup,
         getGroups:getGroups,
-        shareFile:shareFile
+        shareFile:shareFile,
+        updateProfile:updateProfile
     }
 
 });

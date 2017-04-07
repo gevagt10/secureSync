@@ -4,7 +4,8 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
     // User session
     var User = sessionService.get('user');
 
-    $scope.files = [];
+    $scope.myFiles = [];
+    $scope.shareFiles = [];
     $scope.status = "";
     $scope.currentTab = 1;
 
@@ -18,10 +19,14 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
     /** ------------ Async functions ------------ **/
     // Get all password policies
     function getFiles(User) {
-        proxyService.getFiles({ userid: User._id }).then(function(response) {
-            $scope.files = response.data.files;
+        proxyService.getFiles(User).then(function(response) {
+            if (response.data.success) {
+                //console.log(response.data);
+                $scope.myFiles = response.data.myFiles;
+                $scope.shareFiles = response.data.sharedFiles
+            }
         },function() {
-            $scope.files = [];
+            $scope.myFiles = [];
         });
     }
 
@@ -34,7 +39,7 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
             data:{file:file,user:User}
         }).then(function (response) {
             if (response.data.success) {
-                $scope.files.push(response.data.file);
+                $scope.myFiles.push(response.data.file);
             }
         }, function (evt) {
             var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
@@ -60,20 +65,32 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
         //cookieService.destroy('token');
     };
 
-    // Delete
+    // Delete file
     $scope.deleteFile = function (file) {
-        console.log(file);
         var box = confirm('Are you sure you want to delete this file?');
         if (box) {
 
             proxyService.deleteFile({ fileid: file._id }).then(function(response) {
-                $scope.files.splice($scope.files.indexOf(file), 1);
+                $scope.myFiles.splice($scope.myFiles.indexOf(file), 1);
+            });
+        }
+    };
+
+    // Remove shared file
+    $scope.removeSharedFile = function(file) {
+        var box = confirm('Are you sure you want to remove this file?');
+        if (box) {
+            proxyService.removeSharedFile({ file: file,user:User }).then(function(response) {
+                if (response.data.success) {
+                    $scope.shareFiles.splice($scope.shareFiles.indexOf(file), 1);
+                }
             });
         }
     };
 
     // Share
     $scope.share = function(file,ev) {
+        //console.log(file);
         // Pass file to dialog service
         dialogService.setFile(file);
         // Popup file sharing
@@ -83,25 +100,35 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
             parent: angular.element(document.body),
             targetEvent: ev,
             clickOutsideToClose:true
-        }).then(function(group) {
+        }).then(function() {
             //$scope.groups.push(group);
         }, function() {
 
         });
     };
 
+    $scope.emails = function(emails) {
+        var list = '';
+        angular.forEach(emails,function(key,value){
+            //console.log(key);
+            list += key + '\n';
+        });
+        return list
+    };
+
 
     /** ------------ dialog functions ------------ **/
-    function DialogController($scope, $mdDialog, proxyService) {
+    function DialogController($scope, $mdDialog, $timeout, proxyService) {
 
         // Varibels
         $scope.groups = [];
         $scope.emails = [];
         $scope.selectedEmails = [];
-
+        // Alerts
+        $scope.isSuccess = false;
+        $scope.isFailad = false;
+        // Service
         $scope.file = dialogService.getFile();
-
-        //var share = {};
 
         $scope.hide = function() {
             $mdDialog.hide();
@@ -113,9 +140,9 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
 
         // Remove email from form email list
         $scope.removeEmail = function (email) {
-            var index = $scope.selectedEmails.indexOf(email);
+            var index = $scope.file.emails.indexOf(email);
             if (index > -1) {
-                $scope.selectedEmails.splice(index, 1);
+                $scope.file.emails.splice(index, 1);
             }
         };
 
@@ -132,32 +159,42 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
 
 
         // Save dialog details
-        $scope.save = function(share) {
+        $scope.save = function(file) {
             //var share = {};
-
+            //console.log(file);
             if (User._id==$scope.file.user._id) {
-                share.emails = $scope.selectedEmails;
-                share.file =  $scope.file;
+                // share.emails = $scope.file.emails;
+                // share.file =  $scope.file;
 
-                proxyService.shareFile(share).then(function(response){
-                    console.log(response);
+                proxyService.shareFile($scope.file).then(function(response){
+                    if (response.data.success) {
+                        $scope.isSuccess = true;
+                        $scope.isFailad = false;
+                        $timeout(function() {
+                            $mdDialog.hide();
+                        }, 1000);
 
+                    } else {
+                        $scope.isSuccess = false;
+                        $scope.isFailad = true;
+                    }
                 },function(error){
 
                 })
             }
-
-
-            //$mdDialog.hide(group);
         };
 
 
         /** ------------ functions ------------ **/
         function addSelectedEmails(email) {
-            if ($scope.selectedEmails.indexOf(email) == -1) {
-                $scope.selectedEmails.push(email);
+            // if ($scope.selectedEmails.indexOf(email) == -1) {
+            //     $scope.selectedEmails.push(email);
+            // }
+            if ($scope.file.emails.indexOf(email) == -1) {
+                $scope.file.emails.push(email);
             }
         }
+
         // $scope.save = function(group) {
         //     delete group.email;
         //     //group.name = group.name.toLowerCase();

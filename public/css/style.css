@@ -310,3 +310,25 @@ table td {
 .group-collapse {
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 2px 5px 0 rgba(0, 0, 0, 0.24);
 }
+
+/* ------------------ Profile ------------------ */
+
+section .profile {
+  padding-top: 50px;
+}
+
+section .profile .col-md-6 {
+  padding: 10px;
+}
+
+section .profile .left {
+  margin: 0 auto;
+}
+
+section .profile .left img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
