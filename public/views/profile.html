@@ -32,8 +32,9 @@
                 <div class="form-group">
                     <label ng-class="{ 'error': profileForm.password.$invalid && profileForm.$submitted }">Password:
                     </label>
-                    <input type="password" name="password" ng-model="user.password"
+                    <input type="password" name="password" ng-model="user.password" id="password"
                            class="form-control" tabindex="3" placeholder="Password"/>
+                    <ul id="strength" check-strength="user.password"></ul>
                 </div>
 
                 <div class="form-group">

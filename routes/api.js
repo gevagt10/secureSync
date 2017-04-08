@@ -2,6 +2,7 @@ var express  = require('express');
 var router   = express.Router();
 var jwt      = require('jsonwebtoken');
 var config   = require('../config/config');
+var utils = require('../config/utils');
 
 var User     = require('../models/user');
 var Password = require('../models/password');
@@ -85,7 +86,7 @@ function getPasswordDetilas(req,res) {
     return res.json({
         Complaxity: [{id:"1",name:"Easy"},{id:"2",name:"Medium"},{id:"3",name:"Hard"}],
         History: [{id:"1",name:"1"},{id:"2",name:"2"},{id:"3",name:"3"}],
-        Expired: [{id:"1",name:"1 min"},{id:"2",name:"1 hour"},{id:"3",name:"1 week"}],
+        Expired: [{id:"1",name:"1 min"},{id:"2",name:"1 hour"},{id:"3",name:"1 week"},{id:"4",name:"never"}],
         Length: [{id:"1",name:"5"},{id:"2",name:"6"},{id:"3",name:"7"}]
     });
 }
@@ -217,6 +218,9 @@ function createGroup(req, res) {
     });
 }
 
+/** =====================================================**/
+/**                     Group                            **/
+/** ==================================================== **/
 function getGroups(req, res) {
     Group.find({'user._id': req.body._id}, function (err, groups) {
         if (err) throw err;
@@ -233,8 +237,8 @@ function getGroups(req, res) {
 /** ==================================================== **/
 
 function updateProfile(req, res) {
-    console.log(req.body);
-    User.update({_id:req.body._id},{name:req.body.name,password:req.body.password},{upsert: true}, function (err, records) {
+    //console.log(req.body);
+    User.update({_id:req.body._id},{name:req.body.name,password:req.body.password,$push: {oldPasswords:{date:utils.getDate(),pass:req.body.password}}},{upsert: true}, function (err, records) {
         if (records) {
             return res.json({
                 success: true

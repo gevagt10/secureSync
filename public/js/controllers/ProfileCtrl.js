@@ -3,6 +3,7 @@ app.controller('ProfileCtrl', function($scope,sessionService,proxyService) {
     // User session
     var User = sessionService.get('user');
     $scope.user = User;
+    $scope.user.password = [];
 
     $scope.isSuccess = false;
 

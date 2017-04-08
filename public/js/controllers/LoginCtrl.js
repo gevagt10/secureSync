@@ -61,7 +61,6 @@ app.controller('LoginCtrl', function($scope,$timeout,$location,proxyService,mess
     // Login
     function authenticate(user) {
         proxyService.authenticate(user).then(function(response) {
-
             delete response.data.user.password;
 
             sessionService.destroy();

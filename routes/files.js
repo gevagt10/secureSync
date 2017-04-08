@@ -16,6 +16,9 @@ var option = {algorithm: 'aes256'};
 var path = '../uploads/';
 var config = require('../config/config');
 
+// Security policy
+var policy = require('../policy/securityPolicy');
+
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -44,6 +47,12 @@ router.post('/get', function (req, res) {
         //console.log(req.body);
         File.find({emails:req.body.email},function(err,sharedFiles){
             if (err) isError=true;
+
+            //policy.getPasswordExpired(sharedFiles.security.password.expired,"fdf");
+            ///////////////////////////////
+            ////////////////////////////
+            //////////////////////////
+
             return res.json({
                 success: true,
                 myFiles: myFiles,
@@ -55,10 +64,8 @@ router.post('/get', function (req, res) {
                 success: false
             });
         }
-
     });
 });
-
 
 /** Check file before download file **/
 router.post('/download', function (req, res) {
@@ -171,14 +178,13 @@ router.post('/delete', function (req, res) {
 });
 
 router.post('/removeSharedFile', function (req, res) {
-    console.log(req.body);
     // return res.json({
     //     success: false
     // });
     File.update({_id:req.body.file._id},{$pull :{emails:req.body.user.email}}, function (err, records) {
         if (records) {
             return res.json({
-                success: true
+                success: false
             });
         }
     });
