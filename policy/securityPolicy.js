@@ -14,18 +14,23 @@ module.exports = {
         //if (expiredTime=="1 min") console.log("fdfd");
         //console.log(time);
     },
-    isSecurityPermited: function (securityPolicy, userPassword) {
+    isSecurityPermited: function (securityPolicy, user) {
         var policy = {};
         //console.log(user);
-        if (securityPolicy.password.complexity === getPasswordComplexity(userPassword)) {
-            policy.complexity = true;
-        } else {
+        if (securityPolicy.password.complexity === getPasswordComplexity(user.password)) {
             policy.complexity = false;
+        } else {
+            policy.complexity = true;
         }
-        if (securityPolicy.password.length <= getPasswordLength(userPassword)) {
-            policy.length = true;
-        }   else {
+        if (securityPolicy.password.length <= getPasswordLength(user.password)) {
             policy.length = false;
+        }   else {
+            policy.length = true;
+        }
+        if (isPasswordHistoryExpired(securityPolicy.password.history,user.oldPasswords)) {
+            policy.history = true;
+        } else {
+            policy.history = false;
         }
         return policy;
     },
@@ -68,6 +73,19 @@ function getPasswordComplexity(password) {
     if (_force > 40) return "Hard";
     return "Easy";
 }
+// return password length
 function getPasswordLength(password) {
     return password.length;
+}
+// Check password history
+function isPasswordHistoryExpired(passwordHistory, userPasswords) {
+    var i;
+    if (userPasswords.length > 0) {
+        for (i = 0; i < userPasswords.length - 1 && i < passwordHistory; i++) {
+            if (userPasswords[0].pass === userPasswords[i + 1].pass) {
+                return true;
+            }
+        }
+    }
+    return false;
 }

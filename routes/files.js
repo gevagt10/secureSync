@@ -56,7 +56,7 @@ router.post('/get', function (req, res) {
 
                 for(i=0; i < sharedFiles.length;i++) {
 
-                    console.log(policy.isSecurityPermited(sharedFiles[0].security, user.password));
+                    console.log(policy.isSecurityPermited(sharedFiles[0].security, user));
                 }
 
                 return res.json({
