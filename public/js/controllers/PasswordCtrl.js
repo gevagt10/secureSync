@@ -8,7 +8,7 @@ app.controller('PasswordCtrl', function($scope,$mdDialog,proxyService,sessionSer
     $scope.policies = [];
     $scope.headers = [
         {title:"Name"},
-        {title:"Complaxity"},
+        {title:"Complexity"},
         {title:"History"},
         {title:"Expired"},
         {title:"Minimum length"}

@@ -56,9 +56,7 @@ app.controller('SecurityCtrl', function($scope,$mdDialog,proxyService,sessionSer
     }
 
     function removePolicy(policy) {
-        console.log(policy);
         proxyService.removeSecurityPolicy(policy).then(function(response){
-            console.log(response);
             var index = $scope.policies.indexOf(policy);
             $scope.policies.splice(index, 1);
         },function(error){

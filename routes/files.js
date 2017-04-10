@@ -5,7 +5,7 @@ var multer = require('multer');
 var jwt = require('jsonwebtoken');
 
 // Models
-//var User     = require('../models/user');
+var User     = require('../models/user');
 var File = require('../models/file');
 
 // Encrypt files
@@ -31,6 +31,8 @@ var storage = multer.diskStorage({
 
 var upload = multer({storage: storage});
 
+
+
 /** Get all files **/
 router.post('/get', function (req, res) {
     // File.find({'user._id': req.body.userid}, function (err, files) {
@@ -41,30 +43,66 @@ router.post('/get', function (req, res) {
     //     });
     // });
     var isError = false;
-    File.find({'user._id': req.body._id}, function (err, myFiles) {
-        if (err) isError=true;
-        // Check for shared files
-        //console.log(req.body);
-        File.find({emails:req.body.email},function(err,sharedFiles){
+    var files = {};
+    var user = {};
+    var i;
+    User.findOne({'_id': req.body._id}, function (err, user) {
+
+
+        File.find({'user._id': req.body._id}, function (err, myFiles) {
             if (err) isError=true;
+            // Check for shared files
+            File.find({emails:req.body.email},function(err,sharedFiles){
 
-            //policy.getPasswordExpired(sharedFiles.security.password.expired,"fdf");
-            ///////////////////////////////
-            ////////////////////////////
-            //////////////////////////
+                for(i=0; i < sharedFiles.length;i++) {
 
-            return res.json({
-                success: true,
-                myFiles: myFiles,
-                sharedFiles:sharedFiles
+                    console.log(policy.isSecurityPermited(sharedFiles[0].security, user.password));
+                }
+
+                return res.json({
+                    success: true,
+                    myFiles: myFiles,
+                    sharedFiles: sharedFiles
+                });
+
             });
+
         });
-        if (isError) {
-            return res.json({
-                success: false
-            });
-        }
+
     });
+    // function getSharedFiles(param,callback) {
+    //     File.find(param,function(err,sharedFiles){
+    //         if (err) isError=true;
+    //         if (sharedFiles) {
+    //            // for(i=0; i < sharedFiles.length;i++) {
+    //                 var s = policy.isSecurityPermited(sharedFiles[0].security,req.body._id);
+    //                 callback(s);
+    //             //}
+    //         }
+    //         // return res.json({
+    //         //     success: true,
+    //         //     myFiles: myFiles,
+    //         //     sharedFiles:sharedFiles
+    //         // });
+    //
+    //     });
+    // }
+    // Check securty policy
+    //console.log(files);
+
+
+
+    // File.find({$or: [{'user._id': req.body._id}, {emails: req.body.email}]}, function (err, files) {
+    //     for(var i=0; i< files.length;i++) {
+    //         if (!files[i].user._id==req.body._id) {
+    //             console.log("fdfd");
+    //         }
+    //     }
+    //     return res.json({
+    //         success: true,
+    //         files: files
+    //     });
+    // })
 });
 
 /** Check file before download file **/

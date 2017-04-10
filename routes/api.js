@@ -84,7 +84,7 @@ router.post('/updateProfile', function(req,res){updateProfile(req,res)});
 function getPasswordDetilas(req,res) {
 
     return res.json({
-        Complaxity: [{id:"1",name:"Easy"},{id:"2",name:"Medium"},{id:"3",name:"Hard"}],
+        Complexity: [{id:"1",name:"Easy"},{id:"2",name:"Medium"},{id:"3",name:"Hard"}],
         History: [{id:"1",name:"1"},{id:"2",name:"2"},{id:"3",name:"3"}],
         Expired: [{id:"1",name:"1 min"},{id:"2",name:"1 hour"},{id:"3",name:"1 week"},{id:"4",name:"never"}],
         Length: [{id:"1",name:"5"},{id:"2",name:"6"},{id:"3",name:"7"}]
@@ -104,7 +104,7 @@ function createPasswordPolicy(req,res) {
         } else  {
             Password.create({
                 name : req.body.name,
-                complaxity: req.body.complixity.name,
+                complexity: req.body.complexity.name,
                 history: req.body.history.name,
                 expired: req.body.expired.name,
                 length: req.body.length.name,
@@ -177,7 +177,6 @@ function getSecurityPolicies(req,res) {
 
 // Remove security policy
 function removeSecurityPolicy(req,res) {
-    console.log(req.body);
     Security.remove({_id: req.body._id},function(err){
         if (err) res.status(404).send('There is an error remove policy');
         return res.json({'message':"Policy removed"});
@@ -238,7 +237,7 @@ function getGroups(req, res) {
 
 function updateProfile(req, res) {
     //console.log(req.body);
-    User.update({_id:req.body._id},{name:req.body.name,password:req.body.password,$push: {oldPasswords:{date:utils.getDate(),pass:req.body.password}}},{upsert: true}, function (err, records) {
+    User.update({_id:req.body._id},{name:req.body.name,password:req.body.password,$push:{oldPasswords: { $each: [{date:utils.getDate(),pass:req.body.password}],$position:0}}},{upsert: true}, function (err, records) {
         if (records) {
             return res.json({
                 success: true

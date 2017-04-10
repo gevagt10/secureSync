@@ -21,7 +21,15 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
     function getFiles(User) {
         proxyService.getFiles(User).then(function(response) {
             if (response.data.success) {
+                // angular.forEach(response.data.files,function(key,val){
+                //     if (angular.equals(User._id,key.user._id)) {
+                //         $scope.myFiles.push(key);
+                //     } else {
+                //         $scope.shareFiles.push(key);
+                //     }
+                // });
                 //console.log(response.data);
+                //console.log(response.data.myFiles);
                 $scope.myFiles = response.data.myFiles;
                 $scope.shareFiles = response.data.sharedFiles
             }
