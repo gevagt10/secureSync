@@ -10,6 +10,9 @@ var mime = require('mime');
 var utils = require('../config/utils');
 
 var policy = require('../policy/securityPolicy');
+// Date and time
+var moment = require('moment');
+
 //var sleep = require('sleep');
 // Login
 router.post('/authenticate', function (req, res) {
@@ -63,7 +66,7 @@ router.post('/register', function (req, res) {
             name: req.body.name,
             email: req.body.email,
             password: req.body.password,
-            oldPasswords: {'date': utils.getDate(), 'pass': req.body.password}
+            oldPasswords: {'date': moment(), 'pass': req.body.password}
         }, function (err, user) {
             if (err) return res.send(err);
             // Return

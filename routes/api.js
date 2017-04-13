@@ -8,8 +8,10 @@ var User     = require('../models/user');
 var Password = require('../models/password');
 var Security = require('../models/security');
 var Group    = require('../models/group');
-
+// Routes
 var Files    = require('../routes/files');
+// Date and time
+var moment = require('moment');
 
 /* MIDDLEWARE */
 router.use(function (req, res, next) {
@@ -237,7 +239,7 @@ function getGroups(req, res) {
 
 function updateProfile(req, res) {
     //console.log(req.body);
-    User.update({_id:req.body._id},{name:req.body.name,password:req.body.password,$push:{oldPasswords: { $each: [{date:utils.getDate(),pass:req.body.password}],$position:0}}},{upsert: true}, function (err, records) {
+    User.update({_id:req.body._id},{name:req.body.name,password:req.body.password,$push:{oldPasswords: { $each: [{date:moment(),pass:req.body.password}],$position:0}}},{upsert: true}, function (err, records) {
         if (records) {
             return res.json({
                 success: true

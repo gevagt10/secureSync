@@ -43,32 +43,32 @@ router.post('/get', function (req, res) {
     //     });
     // });
     var isError = false;
-    var files = {};
-    var user = {};
-    var i;
     User.findOne({'_id': req.body._id}, function (err, user) {
+        if (user) {
+            File.find({'user._id': req.body._id}, function (err, myFiles) {
+                if (err) isError = true;
+                if (myFiles) {
+                    // Check for shared files
+                    File.find({emails: req.body.email}, function (err, sharedFiles) {
+                        if (sharedFiles) {
+                            var usersFiles = [];
+                            for (var index in sharedFiles) {
+                                // Get security policy for each file
+                                var securityPolicy = (policy.isSecurityPermited(sharedFiles[index].security, user));
+                                // Genrate security and data object for users
+                                usersFiles.push({data: sharedFiles[index], securityPolicy: securityPolicy});
+                            }
+                            return res.json({
+                                success: true,
+                                myFiles: myFiles,
+                                sharedFiles: usersFiles
+                            });
+                        }
 
-
-        File.find({'user._id': req.body._id}, function (err, myFiles) {
-            if (err) isError=true;
-            // Check for shared files
-            File.find({emails:req.body.email},function(err,sharedFiles){
-
-                for(i=0; i < sharedFiles.length;i++) {
-
-                    console.log(policy.isSecurityPermited(sharedFiles[0].security, user));
+                    });
                 }
-
-                return res.json({
-                    success: true,
-                    myFiles: myFiles,
-                    sharedFiles: sharedFiles
-                });
-
             });
-
-        });
-
+        }
     });
     // function getSharedFiles(param,callback) {
     //     File.find(param,function(err,sharedFiles){

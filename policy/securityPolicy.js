@@ -1,37 +1,22 @@
 var utils = require('../config/utils');
+var moment = require('moment');
 // Models
 var User = require('../models/user');
+
 module.exports = {
 
-
-    // Return password lentgh
-
-    getPasswordExpired: function (expiredTime, lastPasswordTime) {
-        var nowTime = utils.getDate();
-        console.log(nowTime);
-        // console.log(expiredTime);
-        // console.log(lastPasswordTime[0].date);
-        //if (expiredTime=="1 min") console.log("fdfd");
-        //console.log(time);
-    },
     isSecurityPermited: function (securityPolicy, user) {
         var policy = {};
-        //console.log(user);
-        if (securityPolicy.password.complexity === getPasswordComplexity(user.password)) {
-            policy.complexity = false;
-        } else {
-            policy.complexity = true;
-        }
-        if (securityPolicy.password.length <= getPasswordLength(user.password)) {
-            policy.length = false;
-        }   else {
-            policy.length = true;
-        }
-        if (isPasswordHistoryExpired(securityPolicy.password.history,user.oldPasswords)) {
-            policy.history = true;
-        } else {
-            policy.history = false;
-        }
+        // Password policy
+        policy.complexity = isPasswordComplexity(user.password,securityPolicy.password.complexity);
+        policy.history = isPasswordHistoryEqual(securityPolicy.password.history,user.oldPasswords);
+        policy.expired = isPasswordExpired(securityPolicy.password.expired,user.oldPasswords[0].date);
+        policy.length = securityPolicy.password.length >= getPasswordLength(user.password);
+        // Security policy
+        policy.readwrite = securityPolicy.readwrite ? securityPolicy.readwrite : 'undefined';
+        policy.lock = securityPolicy.lock ? securityPolicy.lock : 'undefined';
+
+        //console.log(policy);
         return policy;
     },
 
@@ -73,19 +58,54 @@ function getPasswordComplexity(password) {
     if (_force > 40) return "Hard";
     return "Easy";
 }
+function isPasswordComplexity(userPassword,passwordComplexity) {
+    var userPasswordComplexity = getPasswordComplexity(userPassword);
+    if (passwordComplexity === "Easy") {
+        return false;
+    } else if (passwordComplexity === "Medium" && (userPasswordComplexity === "Medium" || userPasswordComplexity === "Hard")) {
+        return false;
+    } else if (userPasswordComplexity === "Hard") {
+        return false;
+    }
+    return true
+}
 // return password length
 function getPasswordLength(password) {
     return password.length;
 }
 // Check password history
-function isPasswordHistoryExpired(passwordHistory, userPasswords) {
+function isPasswordHistoryEqual(passwordHistory, userPasswords) {
     var i;
     if (userPasswords.length > 0) {
-        for (i = 0; i < userPasswords.length - 1 && i < passwordHistory; i++) {
-            if (userPasswords[0].pass === userPasswords[i + 1].pass) {
+        for (i = 1; i < userPasswords.length - 1 && i < passwordHistory; i++) {
+            if (userPasswords[0].pass === userPasswords[i].pass) {
                 return true;
             }
         }
     }
     return false;
+}
+
+// Check password expired time
+function isPasswordExpired(userTimePassword,passwordExpired) {
+    // Current date
+    var CurrentDate = moment();
+    //
+    var temp = moment(passwordExpired);
+    var userPasswordTime = temp.clone().add(1, 'minute');
+    //console.log(temp.format());
+    //console.log(userPasswordTime.format());
+
+    if (userTimePassword === "1 hour") {
+        userPasswordTime = temp.clone().add(1, 'hour');
+    } else if (userTimePassword === "1 week") {
+            userPasswordTime = temp.clone().add(1, 'week');
+    }
+
+    if (CurrentDate.isSameOrAfter(userPasswordTime)) {
+        return true;
+    } else {
+        return false;
+    }
+
 }

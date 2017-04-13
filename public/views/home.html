@@ -78,17 +78,17 @@
 
             <tr ng-repeat="file in shareFiles">
                 <td ng-bind="$index+1"></td>
-                <td ng-bind="file.name"></td>
-                <td ng-bind="file.user.name"></td>
-                <td ng-bind="file.size | filesize"></td>
+                <td ng-bind="file.data.name"></td>
+                <td ng-bind="file.data.user.name"></td>
+                <td ng-bind="file.data.size | filesize"></td>
                 <!--<td ng-bind="emails(file.emails)"></td>-->
                 <!--<td ng-bind="file.emails[0]"></td>-->
                 <td>
-                    <div ng-repeat="email in file.emails">
+                    <div ng-repeat="email in file.data.emails">
                         {{email}}
                     </div>
                 </td>
-                <td ng-bind="file.security.name"></td>
+                <td ng-bind="file.data.security.name"></td>
                 <td><button class="btn btn-primary" ng-click="share(file,$event)">SHARE</button></td>
                 <td><button class="btn btn-success" ng-click="download(file)">DOWNLOAD</button></td>
                 <td><button class="btn btn-danger" ng-click="removeSharedFile(file)">REMOVE</button></td>

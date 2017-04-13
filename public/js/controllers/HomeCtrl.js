@@ -30,8 +30,9 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
                 // });
                 //console.log(response.data);
                 //console.log(response.data.myFiles);
+                console.log(response.data);
                 $scope.myFiles = response.data.myFiles;
-                $scope.shareFiles = response.data.sharedFiles
+                $scope.shareFiles = response.data.sharedFiles;
             }
         },function() {
             $scope.myFiles = [];
