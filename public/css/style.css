@@ -13,6 +13,7 @@ body {
 
 a {
     color: #00B7FF;
+    cursor: pointer;
 }
 
 .display-block {
@@ -30,6 +31,9 @@ a {
 
 .success {
     color: #2ecc71;
+}
+.info {
+    color: #cc6a22;
 }
 
 /* ------------------ LOGIN ------------------ */
@@ -333,6 +337,15 @@ table td {
     color: #fff;
 }
 
+.policy-icons {
+    display: inline;
+    color: #2c51ff;
+    padding-left: 40px;
+    font-size: 1.6em;
+}
+.policy-view label{
+    color:black;
+}
 /* ------------------ GROUPS ------------------ */
 
 .group {

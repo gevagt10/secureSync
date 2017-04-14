@@ -1,0 +1,92 @@
+<md-dialog class="modal-content" aria-label="Mango(Fruit)">
+    <form ng-cloak>
+        <!--<form name="dialog-password.js" ng-submit="registerForm(user)">-->
+        <md-toolbar>
+            <div class="md-toolbar-tools modal-header">
+                <h2>Policy View</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="close()">
+                    <md-icon md-svg-src="images/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <h4>{{file.data.name}}</h4>
+
+                <table class="table policy-view">
+                    <!-- Complixity -->
+                    <tr>
+                        <td><label>Complexity:</label></td>
+                        <td>
+                            <div class="policy-icons">
+                                <!--<div class="glyphicon glyphicon-remove"></div>-->
+                                <div ng-class="file.securityPolicy.complexity ? 'glyphicon glyphicon-remove error' : 'glyphicon glyphicon-ok success'"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- History -->
+                    <tr>
+                        <td><label>History:</label></td>
+                        <td>
+                            <div class="policy-icons">
+                                <div ng-class="file.securityPolicy.history ? 'glyphicon glyphicon-remove error' : 'glyphicon glyphicon-ok success'"></div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Expired -->
+                    <tr>
+                        <td><label>Expired:</label></td>
+                        <td>
+                            <div class="policy-icons">
+                                <div ng-class="file.securityPolicy.expired ? 'glyphicon glyphicon-remove error' : 'glyphicon glyphicon-ok success'"></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- Minimum length -->
+                    <tr>
+                        <td><label>Minimum length:</label></td>
+                        <td>
+                            <div class="policy-icons">
+                                <div ng-class="file.securityPolicy.length ? 'glyphicon glyphicon-remove error' : 'glyphicon glyphicon-ok success'"></div>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Read/Write -->
+                    <tr>
+                        <td><label>Read/Write:</label></td>
+                        <td>
+                            <div class="policy-icons">{{file.securityPolicy.readwrite}}</div>
+                        </td>
+                    </tr>
+
+                    <!-- Lock -->
+                    <tr>
+                        <td><label>Lock password:</label></td>
+                        <td>
+                            <div class="policy-icons">
+                                <div ng-class="file.securityPolicy.lock==='undefined' ? 'glyphicon glyphicon-remove info' : 'glyphicon glyphicon-ok success'"></div>
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+                <div ng-if="!file.isFilePermitted">
+                    <div>##polciy enforcment##</div>
+                    <div>Click <a ng-click=linkTo('profile')>here</a> to chnage password</div>
+                </div>
+
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button ng-click="close()" tabindex="6">
+                Close
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

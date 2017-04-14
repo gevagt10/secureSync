@@ -88,9 +88,14 @@
                         {{email}}
                     </div>
                 </td>
-                <td ng-bind="file.data.security.name"></td>
-                <td><button class="btn btn-primary" ng-click="share(file,$event)">SHARE</button></td>
-                <td><button class="btn btn-success" ng-click="download(file)">DOWNLOAD</button></td>
+                <!--<td ng-bind="file.data.security.name"></td>-->
+                <td>
+                    <div ng-class="file.isFilePermitted ? 'glyphicon glyphicon-ok success' : 'glyphicon glyphicon-remove error'"></div>
+                    <button class="btn btn-group-lg" ng-click="viewPolicy(file)">VIEW</button>
+                </td>
+
+                <td><button class="btn btn-primary" ng-click="share(file,$event)" ng-disabled="!file.isFilePermitted">SHARE</button></td>
+                <td><button class="btn btn-success" ng-click="download(file)" ng-disabled="!file.isFilePermitted">DOWNLOAD</button></td>
                 <td><button class="btn btn-danger" ng-click="removeSharedFile(file)">REMOVE</button></td>
             </tr>
 

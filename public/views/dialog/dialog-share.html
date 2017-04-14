@@ -26,6 +26,7 @@
                 <!-- Security -->
                 <div class="form-group">
                     <label>Security policy:</label>
+                    <div ng-if="file.security">Current policy: {{file.security.name}}</div>
                     <select name="security" id="security" class="form-control" tabindex="1"
                             ng-options="security.name for security in securityPolicies"
                             ng-model="file.security" required>
@@ -33,7 +34,7 @@
                 </div>
 
                 <!-- Groups -->
-                <div class="form-group">
+                <div ng-if="groups.length>0" class="form-group">
                     <label>Groups:</label>
                     <div class="form-inline">
                         <select name="groups" id="group" class="form-control" tabindex="2"

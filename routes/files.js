@@ -222,7 +222,7 @@ router.post('/removeSharedFile', function (req, res) {
     File.update({_id:req.body.file._id},{$pull :{emails:req.body.user.email}}, function (err, records) {
         if (records) {
             return res.json({
-                success: false
+                success: true
             });
         }
     });

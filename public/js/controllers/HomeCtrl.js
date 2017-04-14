@@ -21,21 +21,23 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
     function getFiles(User) {
         proxyService.getFiles(User).then(function(response) {
             if (response.data.success) {
-                // angular.forEach(response.data.files,function(key,val){
-                //     if (angular.equals(User._id,key.user._id)) {
-                //         $scope.myFiles.push(key);
-                //     } else {
-                //         $scope.shareFiles.push(key);
-                //     }
-                // });
-                //console.log(response.data);
-                //console.log(response.data.myFiles);
-                console.log(response.data);
+
                 $scope.myFiles = response.data.myFiles;
-                $scope.shareFiles = response.data.sharedFiles;
+                $scope.shareFiles = [];
+
+                angular.forEach(response.data.sharedFiles,function(key,value){
+                    key.isFilePermitted = true;
+                    if (key.securityPolicy.complexity) key.isFilePermitted = false;
+                    else if (key.securityPolicy.history) key.isFilePermitted = false;
+                    else if (key.securityPolicy.expired) key.isFilePermitted = false;
+                    else if (key.securityPolicy.length) key.isFilePermitted = false;
+                    $scope.shareFiles.push(key);
+                });
+                //console.log($scope.shareFiles);
             }
-        },function() {
+        },function(error) {
             $scope.myFiles = [];
+            $scope.shareFiles = [];
         });
     }
 
@@ -89,8 +91,9 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
     $scope.removeSharedFile = function(file) {
         var box = confirm('Are you sure you want to remove this file?');
         if (box) {
-            proxyService.removeSharedFile({ file: file,user:User }).then(function(response) {
+            proxyService.removeSharedFile({ file: file.data,user:User }).then(function(response) {
                 if (response.data.success) {
+                    console.log($scope.shareFiles);
                     $scope.shareFiles.splice($scope.shareFiles.indexOf(file), 1);
                 }
             });
@@ -104,7 +107,7 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
         dialogService.setFile(file);
         // Popup file sharing
         $mdDialog.show({
-            controller: DialogController,
+            controller: DialogShareController,
             templateUrl: 'views/dialog/dialog-share.html',
             parent: angular.element(document.body),
             targetEvent: ev,
@@ -116,6 +119,7 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
         });
     };
 
+    // Email group
     $scope.emails = function(emails) {
         var list = '';
         angular.forEach(emails,function(key,value){
@@ -126,8 +130,48 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
     };
 
 
+    // View files
+    $scope.viewPolicy = function(file,ev) {
+        getFiles(User);
+        // Forward file to dialog service
+        dialogService.setFile(file);
+        // Popup file sharing
+        $mdDialog.show({
+            controller: DialogViewPolicyController,
+            templateUrl: 'views/dialog/dialog-policy-view.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose:true
+        }).then(function() {
+            //$scope.groups.push(group);
+        }, function() {
+
+        });;
+    };
+
+
     /** ------------ dialog functions ------------ **/
-    function DialogController($scope, $mdDialog, $timeout, proxyService) {
+    // Policy view dialog controller
+    function DialogViewPolicyController($scope, $mdDialog, $timeout, proxyService) {
+        // Service
+        $scope.file = dialogService.getFile();
+
+        $scope.linkTo = function(item) {
+            $mdDialog.hide();
+            $location.path('/' + item);
+        };
+
+        $scope.hide = function() {
+            $mdDialog.hide();
+        };
+
+        $scope.close = function() {
+            $mdDialog.cancel();
+        };
+    }
+
+    // Share dialog controller
+    function DialogShareController($scope, $mdDialog, $timeout, proxyService) {
 
         // Varibels
         $scope.groups = [];
@@ -138,6 +182,7 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
         $scope.isFailad = false;
         // Service
         $scope.file = dialogService.getFile();
+        console.log($scope.file);
 
         $scope.hide = function() {
             $mdDialog.hide();
