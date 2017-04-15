@@ -13,7 +13,7 @@
         <md-dialog-content>
             <div class="md-dialog-content">
                 <div ng-if="isFailad" class="alert alert-danger fade in">
-                    <strong>Failad!</strong> Name already exist.
+                    <strong>Failad!</strong> sharing file.
                 </div>
                 <div ng-if="isSuccess" class="alert alert-success fade in">
                     <strong>success!</strong> share file.
@@ -24,7 +24,7 @@
                 </div>
 
                 <!-- Security -->
-                <div class="form-group">
+                <div ng-if="file.user._id==user._id" class="form-group">
                     <label>Security policy:</label>
                     <div ng-if="file.security">Current policy: {{file.security.name}}</div>
                     <select name="security" id="security" class="form-control" tabindex="1"
@@ -51,7 +51,7 @@
                     <div class="form-inline">
                         <input type="email" class="form-control" name="Email" ng-model="email" tabindex="2"
                                placeholder="Name" autofocus />
-                        <button class="btn btn-success" ng-click="addEmail(email)">Add</button>
+                        <button class="btn btn-success" ng-click="addEmail(email)" ng-disabled="email==file.user.email">Add</button>
                     </div>
                 </div>
 
@@ -61,7 +61,7 @@
                     <div ng-repeat="email in file.emails track by $index" style="margin-bottom: 5px">
                         <div class="form-inline" style="display: flex">
                             <span style="padding: 10px 0; width: 100%">{{email}}</span>
-                            <button class="btn btn-danger" ng-click="removeEmail(email)">remove</button>
+                            <button class="btn btn-danger" ng-click="removeEmail(email)" ng-disabled="email==user.email">remove</button>
                         </div>
                     </div>
                 </div>

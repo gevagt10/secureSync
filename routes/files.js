@@ -70,39 +70,7 @@ router.post('/get', function (req, res) {
             });
         }
     });
-    // function getSharedFiles(param,callback) {
-    //     File.find(param,function(err,sharedFiles){
-    //         if (err) isError=true;
-    //         if (sharedFiles) {
-    //            // for(i=0; i < sharedFiles.length;i++) {
-    //                 var s = policy.isSecurityPermited(sharedFiles[0].security,req.body._id);
-    //                 callback(s);
-    //             //}
-    //         }
-    //         // return res.json({
-    //         //     success: true,
-    //         //     myFiles: myFiles,
-    //         //     sharedFiles:sharedFiles
-    //         // });
-    //
-    //     });
-    // }
-    // Check securty policy
-    //console.log(files);
 
-
-
-    // File.find({$or: [{'user._id': req.body._id}, {emails: req.body.email}]}, function (err, files) {
-    //     for(var i=0; i< files.length;i++) {
-    //         if (!files[i].user._id==req.body._id) {
-    //             console.log("fdfd");
-    //         }
-    //     }
-    //     return res.json({
-    //         success: true,
-    //         files: files
-    //     });
-    // })
 });
 
 /** Check file before download file **/
@@ -274,27 +242,32 @@ router.post('/upload', upload.single('file'), function (req, res) {
 
 /**Share file **/
 router.post('/shareFile', function (req, res) {
-    //console.log(req.body);
     // Check if file exists
-    File.findOne({'_id': req.body._id}, function (err, file) {
-        //console.log(file);
+    File.findOne({'_id': req.body.file._id}, function (err, file) {
         if (err) throw err;
         if(file) {
-            //console.log(file);
-            File.update({_id:file._id},{"security":req.body.security,emails:req.body.emails},{upsert: true},function(err,records){
-                if (err) throw err;
-                //console.log(records);
-                return res.json({
-                    success: true
+            if (req.body.user._id == file.user._id) {
+                File.update({_id: file._id}, {"security": req.body.file.security, emails: req.body.file.emails}, {upsert: true}, function (err, records) {
+                    if (err) throw err;
+                    //console.log(records);
+                    return res.json({
+                        success: true
+                    });
                 });
+            } else {
+                File.update({_id: file._id}, {emails: req.body.file.emails}, {upsert: true}, function (err, records) {
+                    if (err) throw err;
+                    //console.log(records);
+                    return res.json({
+                        success: true
+                    });
+                });
+            }
+        } else {
+            return res.json({
+                success: false
             });
         }
-        // File.insert({"security":req.body.security},function(err,f){
-        //
-        // })
-    });
-    return res.json({
-        success: true
     });
 });
 

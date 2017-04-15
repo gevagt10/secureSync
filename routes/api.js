@@ -185,6 +185,11 @@ function removeSecurityPolicy(req,res) {
     });
 }
 
+
+
+/** =====================================================**/
+/**                     Group                            **/
+/** ==================================================== **/
 // Groups
 function createGroup(req, res) {
 
@@ -218,10 +223,6 @@ function createGroup(req, res) {
 
     });
 }
-
-/** =====================================================**/
-/**                     Group                            **/
-/** ==================================================== **/
 function getGroups(req, res) {
     Group.find({'user._id': req.body._id}, function (err, groups) {
         if (err) throw err;

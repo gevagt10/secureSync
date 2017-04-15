@@ -100,9 +100,19 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
         }
     };
 
+    // Email group
+    $scope.emails = function(emails) {
+        var list = '';
+        angular.forEach(emails,function(key,value){
+            //console.log(key);
+            list += key + '\n';
+        });
+        return list
+    };
+
+
     // Share
     $scope.share = function(file,ev) {
-        //console.log(file);
         // Pass file to dialog service
         dialogService.setFile(file);
         // Popup file sharing
@@ -119,15 +129,7 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
         });
     };
 
-    // Email group
-    $scope.emails = function(emails) {
-        var list = '';
-        angular.forEach(emails,function(key,value){
-            //console.log(key);
-            list += key + '\n';
-        });
-        return list
-    };
+
 
 
     // View files
@@ -175,14 +177,15 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
 
         // Varibels
         $scope.groups = [];
-        $scope.emails = [];
         $scope.selectedEmails = [];
+
         // Alerts
         $scope.isSuccess = false;
         $scope.isFailad = false;
         // Service
         $scope.file = dialogService.getFile();
-        console.log($scope.file);
+
+        $scope.user = User;
 
         $scope.hide = function() {
             $mdDialog.hide();
@@ -216,17 +219,14 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
         $scope.save = function(file) {
             //var share = {};
             //console.log(file);
-            if (User._id==$scope.file.user._id) {
-                // share.emails = $scope.file.emails;
-                // share.file =  $scope.file;
-
-                proxyService.shareFile($scope.file).then(function(response){
+           // if (User._id==$scope.file.user._id) {
+                proxyService.shareFile({file:file,user:User}).then(function(response){
                     if (response.data.success) {
                         $scope.isSuccess = true;
                         $scope.isFailad = false;
                         $timeout(function() {
                             $mdDialog.hide();
-                        }, 1000);
+                        }, 500);
 
                     } else {
                         $scope.isSuccess = false;
@@ -235,38 +235,17 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
                 },function(error){
 
                 })
-            }
+           // }
         };
 
 
         /** ------------ functions ------------ **/
         function addSelectedEmails(email) {
-            // if ($scope.selectedEmails.indexOf(email) == -1) {
-            //     $scope.selectedEmails.push(email);
-            // }
             if ($scope.file.emails.indexOf(email) == -1) {
                 $scope.file.emails.push(email);
             }
         }
 
-        // $scope.save = function(group) {
-        //     delete group.email;
-        //     //group.name = group.name.toLowerCase();
-        //     group.user = User;
-        //     group.emails = $scope.emails;
-        //
-        //     delete group.user.token;
-        //
-        //     proxyService.createGroup(group).then(function(response) {
-        //         if (response.data.success){
-        //             $mdDialog.hide(group);
-        //         } else {
-        //             $scope.isExist = true;
-        //         }
-        //     },function(error) {
-        //
-        //     });
-        // };
 
         /** ------------ Async ------------ **/
         // Async function - get groups
