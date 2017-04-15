@@ -1,4 +1,13 @@
-app.controller('MainCtrl', function($rootScope) {
+app.controller('MainCtrl', function($rootScope,sessionService) {
+
+    if (sessionService.get('user') != null) {
+        //console.log(sessionService.get('user').name);
+        $rootScope.name = sessionService.get('user').name;
+    }
+
+    $rootScope.$on('userReady', function (event, user) {
+        $rootScope.name = user.name;
+    });
 
     $rootScope.getImage = function (user) {
         return 'public/images/female.png';

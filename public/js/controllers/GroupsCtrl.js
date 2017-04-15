@@ -23,13 +23,13 @@ app.controller('GroupsCtrl', function($scope, $mdDialog, sessionService,proxySer
 
     $scope.deleteGroup = function (group) {
         var box = confirm('Are you sure you want delete this group?');
-        // if (box) {
-        //
-        //     proxyService.deleteGroup({fileid: file._id}).then(function (response) {
-        //         $scope.files.splice($scope.files.indexOf(file), 1);
-        //     });
-        //
-        // }
+        if (box) {
+            proxyService.deleteGroup(group).then(function (response) {
+                if (response.data.success) {
+                    $scope.groups.splice($scope.groups.indexOf(group), 1);
+                }
+            });
+        }
     };
 
 

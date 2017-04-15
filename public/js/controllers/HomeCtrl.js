@@ -61,14 +61,15 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
 
     // Download event
     $scope.download = function(file) {
-        proxyService.downloadFile({ fileid: file._id }).then(function(response){
-
-            var fileToken = response.data.token;
-            // Send token to remote server
-            cookieService.set('token',fileToken);
-            // Download file
-            window.location.href = 'http://localhost:3000/api/files/download/' + response.data.filename + '/' + fileToken;
-
+        console.log(file);
+        proxyService.downloadFile({ file: file,user:User }).then(function(response){
+            if (response.data.success) {
+                var fileToken = response.data.token;
+                // Send token to remote server
+                cookieService.set('token',fileToken);
+                // Download file
+                window.location.href = 'http://localhost:3000/api/files/download/' + response.data.filename + '/' + fileToken;
+            }
         },function(error){
 
         });
@@ -177,7 +178,6 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
 
         // Varibels
         $scope.groups = [];
-        $scope.selectedEmails = [];
 
         // Alerts
         $scope.isSuccess = false;

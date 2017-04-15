@@ -54,7 +54,7 @@ router.post('/get', function (req, res) {
                             var usersFiles = [];
                             for (var index in sharedFiles) {
                                 // Get security policy for each file
-                                var securityPolicy = (policy.isSecurityPermited(sharedFiles[index].security, user));
+                                var securityPolicy = (policy.getSecurityPolicy(sharedFiles[index].security, user));
                                 // Genrate security and data object for users
                                 usersFiles.push({data: sharedFiles[index], securityPolicy: securityPolicy});
                             }
@@ -75,22 +75,34 @@ router.post('/get', function (req, res) {
 
 /** Check file before download file **/
 router.post('/download', function (req, res) {
-    File.findOne({_id: req.body.fileid}, function (err, file) {
-        // Genrate temp token for files
-        var token = jwt.sign({file: 'file'}, config.fileSecret, {
-            expiresIn: '5s'
-        });
-        if (file) {
-            return res.json({
-                success: true,
-                filename: file.name,
-                token: token
-            });
-        } else {
-            return res.json({
-                success: false
+    User.findOne({_id: req.body.user._id}, function (err, user) {
+        if (user) {
+            File.findOne({_id: req.body.file._id}, function (err, file) {
+                if (file) {
+                    // Check security policy
+                    if (user._id !== file.user._id) {
+                        var isPolicyPermitted = policy.isSecurityPolicyPermitted(policy.getSecurityPolicy(file.security, user));
+                        if (!isPolicyPermitted) {
+                            // Deny download if policy not permitted
+                            return res.json({
+                                success: false
+                            });
+                        }
+                    }
+                    // Genrate temp token for files
+                    var token = jwt.sign({file: 'file'}, config.fileSecret, {
+                        expiresIn: '5s'
+                    });
+                    return res.json({
+                        success: true,
+                        filename: file.name,
+                        token: token
+                    });
+                }
+
             });
         }
+
     });
 });
 
@@ -157,30 +169,7 @@ router.post('/delete', function (req, res) {
             });
         }
     });
-    /*
-     File.remove({ _id: req.body.fileid }, function(err) {
 
-     if (err) {
-
-     return res.json({
-     success: false
-     });
-
-     } else {
-
-     fs.unlink('/tmp/hello', function () {
-     if (err) throw err;
-
-     return res.json({
-     success: true
-     });
-
-     });
-
-     }
-
-     });
-     */
 });
 
 router.post('/removeSharedFile', function (req, res) {

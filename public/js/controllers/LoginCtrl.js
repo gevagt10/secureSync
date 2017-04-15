@@ -65,6 +65,8 @@ app.controller('LoginCtrl', function($scope,$timeout,$location,proxyService,mess
 
             sessionService.destroy();
             sessionService.set('user', response.data.user);
+            // Notify user chenged
+            $scope.$emit('userReady', response.data.user);
 
             $timeout(function() {
                 $location.path('/home');

@@ -74,6 +74,8 @@ router.post('/removeSecurityPolicy', function(req,res){removeSecurityPolicy(req,
 // Groups
 router.post('/createGroup', function(req,res){createGroup(req,res)});
 router.post('/getGroups', function(req,res){getGroups(req,res)});
+router.post('/deleteGroup', function(req,res){deleteGroup(req,res)});
+
 
 //Profile
 router.post('/updateProfile', function(req,res){updateProfile(req,res)});
@@ -192,20 +194,15 @@ function removeSecurityPolicy(req,res) {
 /** ==================================================== **/
 // Groups
 function createGroup(req, res) {
-
     Group.findOne({
         'name': req.body.name,
         'user._id': req.body.user._id
     }, function(err, group) {
-
         if (group) {
-
             return res.json({
                 success: false
             });
-
         } else {
-
             Group.create({
                 name : req.body.name,
                 user : req.body.user,
@@ -216,11 +213,8 @@ function createGroup(req, res) {
                     success: true,
                     group: group
                 });
-
             });
-
         }
-
     });
 }
 function getGroups(req, res) {
@@ -233,7 +227,15 @@ function getGroups(req, res) {
 
     });
 }
-
+// Remove security policy
+function deleteGroup(req,res) {
+    Group.remove({_id: req.body._id},function(err){
+        if (err) res.status(404).send('There is an error remove policy');
+        return res.json({
+            success: true
+        });
+    });
+}
 /** =====================================================**/
 /**                     Profile                         **/
 /** ==================================================== **/

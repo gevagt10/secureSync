@@ -95,7 +95,7 @@
                 </td>
 
                 <td><button class="btn btn-primary" ng-click="share(file.data,$event)" ng-disabled="!file.isFilePermitted">SHARE</button></td>
-                <td><button class="btn btn-success" ng-click="download(file)" ng-disabled="!file.isFilePermitted">DOWNLOAD</button></td>
+                <td><button class="btn btn-success" ng-click="download(file.data)" ng-disabled="!file.isFilePermitted">DOWNLOAD</button></td>
                 <td><button class="btn btn-danger" ng-click="removeSharedFile(file)">REMOVE</button></td>
             </tr>
 

@@ -181,6 +181,16 @@ app.factory('proxyService', function($http, $q) {
         return deferred.promise;
     };
 
+    var deleteGroup = function (data) {
+        var deferred = $q.defer();
+        $http.post(url + 'deleteGroup', data).then(function(response) {
+            deferred.resolve(response);
+        }).catch(function(data, status, headers, config) {
+            deferred.reject(data);
+        });
+        return deferred.promise;
+    };
+
     /* ------------------------------------------------------------ */
     /* ---------------------------- Profile ----------------------- */
     /* ------------------------------------------------------------ */
@@ -210,6 +220,7 @@ app.factory('proxyService', function($http, $q) {
         removeSecurityPolicy:removeSecurityPolicy,
         createGroup: createGroup,
         getGroups:getGroups,
+        deleteGroup:deleteGroup,
         shareFile:shareFile,
         updateProfile:updateProfile
     }

@@ -5,18 +5,23 @@ var User = require('../models/user');
 
 module.exports = {
 
-    isSecurityPermited: function (securityPolicy, user) {
+    isSecurityPolicyPermitted: function(policy) {
+        if (!policy.complexity && !policy.history && !policy.expired && policy.length) return false;
+        return true;
+    },
+    getSecurityPolicy: function (securityPolicy, user) {
         var policy = {};
-        // Password policy
-        policy.complexity = isPasswordComplexity(user.password,securityPolicy.password.complexity);
-        policy.history = isPasswordHistoryEqual(securityPolicy.password.history,user.oldPasswords);
-        policy.expired = isPasswordExpired(securityPolicy.password.expired,user.oldPasswords[0].date);
-        policy.length = securityPolicy.password.length >= getPasswordLength(user.password);
-        // Security policy
-        policy.readwrite = securityPolicy.readwrite ? securityPolicy.readwrite : 'undefined';
-        policy.lock = securityPolicy.lock ? securityPolicy.lock : 'undefined';
-
-        //console.log(policy);
+        if (typeof securityPolicy !== 'undefined' && securityPolicy !== null){
+            // Password policy
+            policy.complexity = isPasswordComplexity(user.password, securityPolicy.password.complexity);
+            policy.history = isPasswordHistoryEqual(securityPolicy.password.history, user.oldPasswords);
+            policy.expired = isPasswordExpired(securityPolicy.password.expired, user.oldPasswords[0].date);
+            policy.length = (securityPolicy.password.length >= getPasswordLength(user.password));
+            // Security policy
+            policy.readwrite = securityPolicy.readwrite ? securityPolicy.readwrite : 'undefined';
+            policy.lock = securityPolicy.lock ? securityPolicy.lock : 'undefined';
+            //console.log(policy)
+        }
         return policy;
     },
 
