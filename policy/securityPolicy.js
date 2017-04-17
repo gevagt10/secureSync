@@ -19,7 +19,7 @@ module.exports = {
             policy.length = (securityPolicy.password.length >= getPasswordLength(user.password));
             // Security policy
             policy.readwrite = securityPolicy.readwrite ? securityPolicy.readwrite : 'undefined';
-            policy.lock = securityPolicy.lock ? securityPolicy.lock : 'undefined';
+            policy.lock = securityPolicy.lock ? 'true' : 'false';
             //console.log(policy)
         }
         return policy;

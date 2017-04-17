@@ -33,7 +33,7 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
                     else if (key.securityPolicy.length) key.isFilePermitted = false;
                     $scope.shareFiles.push(key);
                 });
-                //console.log($scope.shareFiles);
+                //console.log(response.data);
             }
         },function(error) {
             $scope.myFiles = [];
@@ -60,21 +60,49 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
     };
 
     // Download event
-    $scope.download = function(file) {
-        console.log(file);
-        proxyService.downloadFile({ file: file,user:User }).then(function(response){
-            if (response.data.success) {
-                var fileToken = response.data.token;
-                // Send token to remote server
-                cookieService.set('token',fileToken);
-                // Download file
-                window.location.href = 'http://localhost:3000/api/files/download/' + response.data.filename + '/' + fileToken;
-            }
-        },function(error){
+    $scope.download = function(file,ev) {
+        var lock = file.security.lock;
+        if (lock) {
+            // Appending dialog to document.body to cover sidenav in docs app
+            var confirm = $mdDialog.prompt()
+                .title('Policy enforcment')
+                .textContent('Please insert password for start downloading')
+                .placeholder('Password')
+                .ariaLabel('Dog name')
+                .targetEvent(ev)
+                .ok('Download')
+                .cancel('Cancel');
 
-        });
-        // Remove token
-        //cookieService.destroy('token');
+            $mdDialog.show(confirm).then(function (result) {
+                if (angular.equals(lock,result)) {
+                    downloadFile();
+                } else {
+                    $scope.status = 'Password invalid';
+                }
+            }, function () {
+
+            });
+        } else {
+            downloadFile();
+        }
+        function downloadFile(){
+            proxyService.downloadFile({ file: file,user:User }).then(function(response){
+                if (response.data.success) {
+                    var fileToken = response.data.token;
+                    // Send token to remote server
+                    cookieService.set('token',fileToken);
+                    // Download file
+                    window.location.href = 'http://localhost:3000/api/files/download/' + response.data.filename + '/' + fileToken;
+                }
+            },function(error){
+
+            });
+            //Remove token
+            cookieService.destroy('token');
+        }
+
+
+
     };
 
     // Delete file
