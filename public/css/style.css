@@ -35,6 +35,9 @@ a {
 .info {
     color: #cc6a22;
 }
+.center-items {
+    text-align: center;
+}
 
 /* ------------------ LOGIN ------------------ */
 .login-page {
@@ -345,6 +348,11 @@ table td {
 }
 .policy-view label{
     color:black;
+}
+.modal-content textarea {
+    width: 100%;
+    height: 350px;
+    resize: none;
 }
 /* ------------------ GROUPS ------------------ */
 

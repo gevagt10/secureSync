@@ -55,8 +55,6 @@ router.use(function (req, res, next) {
 });
 
 
-
-
 // Files
 router.use('/files', Files);
 
@@ -253,7 +251,6 @@ function updateProfile(req, res) {
             });
         }
     });
-
 }
 
 

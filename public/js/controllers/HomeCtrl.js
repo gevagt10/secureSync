@@ -33,7 +33,7 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
                     else if (key.securityPolicy.length) key.isFilePermitted = false;
                     $scope.shareFiles.push(key);
                 });
-                //console.log(response.data);
+                //console.log($scope.shareFiles);
             }
         },function(error) {
             $scope.myFiles = [];
@@ -59,8 +59,17 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
         });
     };
 
-    // Download event
+
     $scope.download = function(file,ev) {
+        download(file,ev,0)
+    };
+
+    $scope.preview = function(file,ev) {
+        download(file,ev,1)
+    };
+
+    // Download event
+    function download(file,ev,isPreview) {
         var lock = file.security.lock;
         if (lock) {
             // Appending dialog to document.body to cover sidenav in docs app
@@ -82,17 +91,42 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
             }, function () {
 
             });
-        } else {
+        } else { // No password needed
             downloadFile();
         }
+        // Download function
         function downloadFile(){
             proxyService.downloadFile({ file: file,user:User }).then(function(response){
                 if (response.data.success) {
                     var fileToken = response.data.token;
                     // Send token to remote server
                     cookieService.set('token',fileToken);
-                    // Download file
-                    window.location.href = 'http://localhost:3000/api/files/download/' + response.data.filename + '/' + fileToken;
+
+                    // Check if preview reqeust or download
+                    if (isPreview) {
+                        proxyService.filePreview({ filename: file.name }).then(function(response){
+                            if (response.data.success) {
+                                // Dialog service
+                                dialogService.setFile({name:file.name ,data:response.data.file});
+                                // Show Dialog
+                                $mdDialog.show({
+                                    controller: DialogFileEditController,
+                                    templateUrl: 'views/dialog/dialog-file-edit.html',
+                                    parent: angular.element(document.body),
+                                    targetEvent: ev,
+                                    clickOutsideToClose:true
+                                }).then(function() {
+                                    //$scope.groups.push(group);
+                                }, function() {
+
+                                });
+                            }
+
+                        });
+                    } else {
+                        // Download file
+                        window.location.href = 'http://localhost:3000/api/files/download/' + response.data.filename + '/' + fileToken;
+                    }
                 }
             },function(error){
 
@@ -100,8 +134,6 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
             //Remove token
             cookieService.destroy('token');
         }
-
-
 
     };
 
@@ -177,11 +209,29 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
             //$scope.groups.push(group);
         }, function() {
 
-        });;
+        });
     };
 
 
     /** ------------ dialog functions ------------ **/
+    // File editor dialog
+    function DialogFileEditController($scope, $mdDialog, $timeout, proxyService) {
+        // Service
+        $scope.file = dialogService.getFile();
+
+        $scope.save = function(file) {
+            $mdDialog.hide();
+        };
+
+        $scope.hide = function() {
+            $mdDialog.hide();
+        };
+
+        $scope.cancel = function() {
+            $mdDialog.cancel();
+        };
+    }
+
     // Policy view dialog controller
     function DialogViewPolicyController($scope, $mdDialog, $timeout, proxyService) {
         // Service
@@ -267,7 +317,7 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
         };
 
 
-        /** ------------ functions ------------ **/
+        /** ------------ Dialog functions ------------ **/
         function addSelectedEmails(email) {
             if ($scope.file.emails.indexOf(email) == -1) {
                 $scope.file.emails.push(email);
@@ -275,7 +325,7 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
         }
 
 
-        /** ------------ Async ------------ **/
+        /** ------------ Dialog Async ------------ **/
         // Async function - get groups
         proxyService.getGroups(User).then(function(response){
             $scope.groups = response.data.groups;

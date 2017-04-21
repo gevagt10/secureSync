@@ -52,7 +52,12 @@
             <td ng-bind="file.size | filesize"></td>
             <td ng-bind="file.security.name"></td>
             <td><button class="btn btn-primary" ng-click="share(file,$event)">SHARE</button></td>
-            <td><button class="btn btn-success" ng-click="download(file,$event)">DOWNLOAD</button></td>
+            <td>
+                <div class="center-items">
+                    <button class="btn btn-success" ng-click="download(file,$event)">DOWNLOAD</button>
+                    <button class="btn btn-info" ng-click="preview(file,$event)">View</button>
+                </div>
+            </td>
             <td><button class="btn btn-danger" ng-click="deleteFile(file)">DELETE</button></td>
           </tr>
 
@@ -94,8 +99,13 @@
                     <button class="btn btn-group-lg" ng-click="viewPolicy(file)">VIEW</button>
                 </td>
 
-                <td><button class="btn btn-primary" ng-click="share(file.data,$event)" ng-disabled="!file.isFilePermitted">SHARE</button></td>
-                <td><button class="btn btn-success" ng-click="download(file.data,$event)" ng-disabled="!file.isFilePermitted">DOWNLOAD</button></td>
+                <td><button class="btn btn-primary" ng-click="share(file.data,$event)" >SHARE</button></td>
+                <td>
+                    <div class="center-items">
+                        <button class="btn btn-success" ng-click="download(file,$event)" ng-disabled="!file.isFilePermitted">DOWNLOAD</button>
+                        <button class="btn btn-info" ng-click="preview(file,$event)" ng-disabled="!file.isFilePermitted">View</button>
+                    </div>
+                </td>
                 <td><button class="btn btn-danger" ng-click="removeSharedFile(file)">REMOVE</button></td>
             </tr>
 

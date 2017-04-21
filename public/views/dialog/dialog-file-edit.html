@@ -1,0 +1,32 @@
+<md-dialog class="modal-content" aria-label="Mango(Fruit)">
+    <form ng-cloak>
+        <!--<form name="dialog-password.js" ng-submit="registerForm(user)">-->
+        <md-toolbar>
+            <div class="md-toolbar-tools modal-header">
+                <h2>File editor</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon md-svg-src="images/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <h4>{{file.name}}</h4>
+                <textarea>{{file.data}}</textarea>
+
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button ng-click="save()" tabindex="6">
+                Save
+            </md-button>
+            <md-button ng-click="cancel()" tabindex="6">
+                Cancel
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

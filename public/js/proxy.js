@@ -38,6 +38,16 @@ app.factory('proxyService', function($http, $q) {
         return deferred.promise;
     };
 
+    var filePreview = function(data) {
+        var deferred = $q.defer();
+        $http.post(url + 'files/preview', data).then(function(response) {
+            deferred.resolve(response);
+        }).catch(function(data, status, headers, config) {
+            deferred.reject(data);
+        });
+        return deferred.promise;
+    };
+
     var deleteFile = function (data) {
         var deferred = $q.defer();
         $http.post(url + 'files/delete', data).then(function(response) {
@@ -209,6 +219,7 @@ app.factory('proxyService', function($http, $q) {
         authenticate: authenticate,
         getFiles:getFiles,
         downloadFile:downloadFile,
+        filePreview:filePreview,
         deleteFile: deleteFile,
         removeSharedFile:removeSharedFile,
         getPasswordDetilas:getPasswordDetilas,

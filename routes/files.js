@@ -15,7 +15,7 @@ var key = 'fdfdfdfdf';
 var option = {algorithm: 'aes256'};
 var path = '../uploads/';
 var config = require('../config/config');
-
+var extantion = require('path');
 // Security policy
 var policy = require('../policy/securityPolicy');
 
@@ -114,7 +114,6 @@ router.get('/download/:filename/:token', function (req, res, next) {
     if (fs.existsSync(customFile)) {
         encryptor.decryptFile(customFile, filename, key, option, function (err) {
             if (err) {
-                console.log("ERROR");
                 return res.json({
                     success: false,
                     message: 'File not found.'
@@ -131,7 +130,6 @@ router.get('/download/:filename/:token', function (req, res, next) {
                     }
                 });
             }
-
         });
     } else {
         return res.json({
@@ -140,6 +138,45 @@ router.get('/download/:filename/:token', function (req, res, next) {
         });
     }
 });
+
+
+// Preview files
+router.post('/preview', function (req, res, next) {
+    var filename = path + req.body.filename;
+    var customFile = filename.substr(0, filename.lastIndexOf(".")) + ".dat";
+
+    // var tt = extantion.extname(filename)
+    // console.log(tt.split('.').pop());
+
+    if (fs.existsSync(customFile)) {
+        encryptor.decryptFile(customFile, filename, key, option, function (err) {
+            if (err) {
+                return res.json({
+                    success: false,
+                    message: 'File not found.'
+                });
+            } else {
+                fs.readFile(filename, 'utf8', function(err, data) {
+                    if (err){
+                        return res.json({
+                            success: false,
+                            message: 'File not found.'
+                        });
+                    } else {
+                        fs.unlink(filename);
+                        return res.json({
+                            success: true,
+                            file: data
+                        });
+
+                    }
+                });
+            }
+        });
+    }
+
+});
+
 
 
 /** Delete file **/
@@ -259,6 +296,7 @@ router.post('/shareFile', function (req, res) {
         }
     });
 });
+
 
 module.exports = router;
 

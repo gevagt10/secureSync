@@ -68,11 +68,10 @@
                         <td><label>Lock password:</label></td>
                         <td>
                             <div class="policy-icons">
-                                <div ng-class="file.securityPolicy.lock ? 'glyphicon glyphicon-remove info' : 'glyphicon glyphicon-ok success'"></div>
+                                <div ng-class="file.securityPolicy.lock=='true' ? 'glyphicon glyphicon-ok success' : 'glyphicon glyphicon-remove info'"></div>
                             </div>
                         </td>
                     </tr>
-
                 </table>
                 <div ng-if="!file.isFilePermitted">
                     <div>##polciy enforcment##</div>
