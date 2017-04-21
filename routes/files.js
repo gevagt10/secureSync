@@ -144,9 +144,7 @@ router.get('/download/:filename/:token', function (req, res, next) {
 router.post('/preview', function (req, res, next) {
     var filename = path + req.body.filename;
     var customFile = filename.substr(0, filename.lastIndexOf(".")) + ".dat";
-
-    // var tt = extantion.extname(filename)
-    // console.log(tt.split('.').pop());
+    var isError = false;
 
     if (fs.existsSync(customFile)) {
         encryptor.decryptFile(customFile, filename, key, option, function (err) {
@@ -155,23 +153,44 @@ router.post('/preview', function (req, res, next) {
                     success: false,
                     message: 'File not found.'
                 });
-            } else {
-                fs.readFile(filename, 'utf8', function(err, data) {
-                    if (err){
-                        return res.json({
-                            success: false,
-                            message: 'File not found.'
-                        });
-                    } else {
+            } else { //File decrypt
+                var fileExt = extantion.extname(filename).split('.').pop();
+                if (fileExt === 'txt') {
+                    fs.readFile(filename, 'utf8', function (err, data) {
+                        if (err) {
+                            isError = true;
+                            return;
+                        }
                         fs.unlink(filename);
                         return res.json({
                             success: true,
-                            file: data
+                            file: data,
+                            ext:fileExt
                         });
-
-                    }
-                });
+                    });
+                } else if (fileExt === 'jpg') {
+                    fs.readFile(filename, function (err, data) {
+                        if (err) {
+                            isError = true;
+                            return;
+                        }
+                        fs.unlink(filename);
+                        var base64image = new Buffer(data).toString('base64');
+                        return res.json({
+                            success: true,
+                            file: base64image,
+                            ext:fileExt
+                        });
+                    });
+                }
+                if (isError) {
+                    return res.json({
+                        success: false,
+                        message: 'File not found.'
+                    });
+                }
             }
+
         });
     }
 

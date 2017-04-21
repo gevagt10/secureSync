@@ -79,7 +79,7 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
                 .placeholder('Password')
                 .ariaLabel('Dog name')
                 .targetEvent(ev)
-                .ok('Download')
+                .ok('Ok')
                 .cancel('Cancel');
 
             $mdDialog.show(confirm).then(function (result) {
@@ -105,9 +105,10 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
                     // Check if preview reqeust or download
                     if (isPreview) {
                         proxyService.filePreview({ filename: file.name }).then(function(response){
+                            console.log(response);
                             if (response.data.success) {
                                 // Dialog service
-                                dialogService.setFile({name:file.name ,data:response.data.file});
+                                dialogService.setFile({name:file.name ,data:response.data.file,ext:response.data.ext});
                                 // Show Dialog
                                 $mdDialog.show({
                                     controller: DialogFileEditController,
@@ -218,6 +219,11 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
     function DialogFileEditController($scope, $mdDialog, $timeout, proxyService) {
         // Service
         $scope.file = dialogService.getFile();
+        $scope.isFile = false;
+        if (angular.equals($scope.file.ext,'txt')) {
+            $scope.isFile = true;
+        }
+
 
         $scope.save = function(file) {
             $mdDialog.hide();

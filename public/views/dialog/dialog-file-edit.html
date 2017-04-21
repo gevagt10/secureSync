@@ -14,18 +14,18 @@
         <md-dialog-content>
             <div class="md-dialog-content">
                 <h4>{{file.name}}</h4>
-                <textarea>{{file.data}}</textarea>
-
+                <textarea ng-if="isFile">{{file.data}}</textarea>
+                <img ng-if="!isFile" data-ng-src="data:image/jpg;base64,{{file.data}}" />
             </div>
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
             <span flex></span>
-            <md-button ng-click="save()" tabindex="6">
-                Save
-            </md-button>
-            <md-button ng-click="cancel()" tabindex="6">
+            <md-button ng-click="cancel()" tabindex="5">
                 Cancel
+            </md-button>
+            <md-button ng-click="save()"  ng-disabled="!isFile" tabindex="6">
+                Save
             </md-button>
         </md-dialog-actions>
     </form>
