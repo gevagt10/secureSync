@@ -75,7 +75,7 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
             // Appending dialog to document.body to cover sidenav in docs app
             var confirm = $mdDialog.prompt()
                 .title('Policy enforcment')
-                .textContent('Please insert password for start downloading')
+                .textContent('Please insert password for open file')
                 .placeholder('Password')
                 .ariaLabel('Dog name')
                 .targetEvent(ev)
@@ -104,11 +104,11 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
 
                     // Check if preview reqeust or download
                     if (isPreview) {
-                        proxyService.filePreview({ filename: file.name }).then(function(response){
-                            console.log(response);
+                        proxyService.filePreview({ file: file }).then(function(response){
                             if (response.data.success) {
                                 // Dialog service
-                                dialogService.setFile({name:file.name ,data:response.data.file,ext:response.data.ext});
+                                //dialogService.setFile({name:file.name ,data:response.data.file,ext:response.data.ext});
+                                dialogService.setFile({file:file ,data:response.data.file,ext:response.data.ext});
                                 // Show Dialog
                                 $mdDialog.show({
                                     controller: DialogFileEditController,
@@ -125,7 +125,7 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
 
                         });
                     } else {
-                        // Download file
+                        // Download file - download state
                         window.location.href = 'http://localhost:3000/api/files/download/' + response.data.filename + '/' + fileToken;
                     }
                 }
@@ -166,7 +166,6 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
     $scope.emails = function(emails) {
         var list = '';
         angular.forEach(emails,function(key,value){
-            //console.log(key);
             list += key + '\n';
         });
         return list
@@ -190,8 +189,6 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
 
         });
     };
-
-
 
 
     // View files
@@ -223,10 +220,17 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
         if (angular.equals($scope.file.ext,'txt')) {
             $scope.isFile = true;
         }
-
+        $scope.isSuccess = false;
 
         $scope.save = function(file) {
-            $mdDialog.hide();
+            proxyService.editFile({id:$scope.file.file._id,data:file.data}).then(function(response){
+                $scope.isSuccess = true;
+                $timeout(function() {
+                    $mdDialog.hide();
+                }, 1000);
+            },function(error){
+
+            });
         };
 
         $scope.hide = function() {

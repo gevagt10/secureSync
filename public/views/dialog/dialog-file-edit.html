@@ -13,8 +13,12 @@
 
         <md-dialog-content>
             <div class="md-dialog-content">
-                <h4>{{file.name}}</h4>
-                <textarea ng-if="isFile">{{file.data}}</textarea>
+                <div ng-if="isSuccess" class="alert alert-success fade in">
+                    <strong>success!</strong> file saved
+                </div>
+
+                <h4>{{file.file.name}}</h4>
+                <textarea ng-if="isFile" ng-model="file.data"></textarea>
                 <img ng-if="!isFile" data-ng-src="data:image/jpg;base64,{{file.data}}" />
             </div>
         </md-dialog-content>
@@ -24,7 +28,7 @@
             <md-button ng-click="cancel()" tabindex="5">
                 Cancel
             </md-button>
-            <md-button ng-click="save()"  ng-disabled="!isFile" tabindex="6">
+            <md-button ng-click="save(file)"  ng-disabled="!isFile" tabindex="6">
                 Save
             </md-button>
         </md-dialog-actions>

@@ -5,7 +5,7 @@ var multer = require('multer');
 var jwt = require('jsonwebtoken');
 
 // Models
-var User     = require('../models/user');
+var User = require('../models/user');
 var File = require('../models/file');
 
 // Encrypt files
@@ -30,7 +30,6 @@ var storage = multer.diskStorage({
 });
 
 var upload = multer({storage: storage});
-
 
 
 /** Get all files **/
@@ -142,7 +141,7 @@ router.get('/download/:filename/:token', function (req, res, next) {
 
 // Preview files
 router.post('/preview', function (req, res, next) {
-    var filename = path + req.body.filename;
+    var filename = path + req.body.file.name;
     var customFile = filename.substr(0, filename.lastIndexOf(".")) + ".dat";
     var isError = false;
 
@@ -165,7 +164,7 @@ router.post('/preview', function (req, res, next) {
                         return res.json({
                             success: true,
                             file: data,
-                            ext:fileExt
+                            ext: fileExt
                         });
                     });
                 } else if (fileExt === 'jpg') {
@@ -179,7 +178,7 @@ router.post('/preview', function (req, res, next) {
                         return res.json({
                             success: true,
                             file: base64image,
-                            ext:fileExt
+                            ext: fileExt
                         });
                     });
                 }
@@ -195,8 +194,43 @@ router.post('/preview', function (req, res, next) {
     }
 
 });
+/** Edit file **/
+router.post('/edit', function (req, res) {
+    if (req.body) {
+        File.findOne({_id: req.body.id}, function (err, file) {
+            if (err) throw err;
+            if (file) {
+                var filename = path + file.name;
+                var customFile = filename.substr(0, filename.lastIndexOf(".")) + ".dat";
+                if (fs.existsSync(customFile)) {
+                    encryptor.decryptFile(customFile, filename, key, option, function (err) {
+                        fs.readFile(filename, 'utf-8', function (err, data) {
+                            if (err) throw err;
+                            if (data) {
+                                fs.writeFile(filename, req.body.data, 'utf-8', function (err) {
+                                    if (err) throw err;
+                                    // Encrypt file again
+                                    encryptor.encryptFile(filename, customFile, key, option, function (err) {
+                                        if (err) throw err;
+                                        fs.unlink(filename);
+                                        return res.json({
+                                            success: true
+                                        });
+                                    });
 
 
+                                });
+                            }
+                        });
+
+                    });
+                }
+
+            }
+        });
+    }
+
+});
 
 /** Delete file **/
 router.post('/delete', function (req, res) {
@@ -232,7 +266,7 @@ router.post('/removeSharedFile', function (req, res) {
     // return res.json({
     //     success: false
     // });
-    File.update({_id:req.body.file._id},{$pull :{emails:req.body.user.email}}, function (err, records) {
+    File.update({_id: req.body.file._id}, {$pull: {emails: req.body.user.email}}, function (err, records) {
         if (records) {
             return res.json({
                 success: true
@@ -290,9 +324,12 @@ router.post('/shareFile', function (req, res) {
     // Check if file exists
     File.findOne({'_id': req.body.file._id}, function (err, file) {
         if (err) throw err;
-        if(file) {
+        if (file) {
             if (req.body.user._id == file.user._id) {
-                File.update({_id: file._id}, {"security": req.body.file.security, emails: req.body.file.emails}, {upsert: true}, function (err, records) {
+                File.update({_id: file._id}, {
+                    "security": req.body.file.security,
+                    emails: req.body.file.emails
+                }, {upsert: true}, function (err, records) {
                     if (err) throw err;
                     //console.log(records);
                     return res.json({
