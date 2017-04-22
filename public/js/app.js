@@ -4,7 +4,8 @@ var app = angular.module('secureSync', [
     'ngMessages',
     'ngMaterial',
     'ngFileUpload',
-    'ngCookies'
+    'ngCookies',
+    'ngFilesizeFilter'
 ]);
 
 app.config(function($routeProvider,$locationProvider) {

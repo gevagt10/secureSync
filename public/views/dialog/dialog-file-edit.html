@@ -18,7 +18,7 @@
                 </div>
 
                 <h4>{{file.file.name}}</h4>
-                <textarea ng-if="isFile" ng-model="file.data"></textarea>
+                <textarea ng-if="isFile" ng-model="file.data" ng-disabled="isWritePermmesion"></textarea>
                 <img ng-if="!isFile" data-ng-src="data:image/jpg;base64,{{file.data}}" />
             </div>
         </md-dialog-content>

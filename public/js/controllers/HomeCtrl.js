@@ -226,7 +226,23 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
         if (angular.equals($scope.file.ext,'txt')) {
             $scope.isFile = true;
         }
+        // Success alert
         $scope.isSuccess = false;
+        // Security read/write permession
+        $scope.isWritePermmesion = true;
+
+        // Check security permmision
+        // First check if current user is owner
+        if (angular.equals(User._id,$scope.file.file.user._id)) {
+            $scope.isWritePermmesion = false;
+        } else {
+            if (angular.equals($scope.file.file.security.readwrite,'readwrite')) {
+                $scope.isWritePermmesion = false;
+            } else {
+                // Disabled editor for user
+                $scope.isWritePermmesion = true;
+            }
+        }
 
         $scope.save = function(file) {
             proxyService.editFile({id:$scope.file.file._id,data:file.data}).then(function(response){
@@ -360,30 +376,31 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
 
 
 
-}).filter( 'filesize', function () {
-
-  var units = [
-    'bytes',
-    'KB',
-    'MB',
-    'GB',
-    'TB',
-    'PB'
-  ];
-
-  return function( bytes, precision ) {
-    if ( isNaN( parseFloat( bytes )) || ! isFinite( bytes ) ) {
-      return '?';
-    }
-
-    var unit = 0;
-
-    while ( bytes >= 1024 ) {
-      bytes /= 1024;
-      unit ++;
-    }
-
-    return bytes.toFixed( + precision ) + ' ' + units[ unit ];
-  };
-
 });
+//     .filter( 'filesize', function () {
+//
+//   var units = [
+//     'bytes',
+//     'KB',
+//     'MB',
+//     'GB',
+//     'TB',
+//     'PB'
+//   ];
+//
+//   return function( bytes, precision ) {
+//     if ( isNaN( parseFloat( bytes )) || ! isFinite( bytes ) ) {
+//       return '?';
+//     }
+//
+//     var unit = 0;
+//
+//     while ( bytes >= 1024 ) {
+//       bytes /= 1024;
+//       unit ++;
+//     }
+//
+//     return bytes.toFixed( + precision ) + ' ' + units[ unit ];
+//   };
+//
+// });
