@@ -55,7 +55,7 @@
             <td>
                 <div class="center-items">
                     <button class="btn btn-success" ng-click="download(file,$event)">DOWNLOAD</button>
-                    <button class="btn btn-info" ng-click="preview(file,$event)">View</button>
+                    <button class="btn btn-info" ng-click="preview(file,$event)" ng-disabled="isFileExtPermit(file.name)">View</button>
                 </div>
             </td>
             <td><button class="btn btn-danger" ng-click="deleteFile(file)">DELETE</button></td>
@@ -103,7 +103,7 @@
                 <td>
                     <div class="center-items">
                         <button class="btn btn-success" ng-click="download(file.data,$event)" ng-disabled="!file.isFilePermitted">DOWNLOAD</button>
-                        <button class="btn btn-info" ng-click="preview(file.data,$event)" ng-disabled="!file.isFilePermitted">View</button>
+                        <button class="btn btn-info" ng-click="preview(file.data,$event)" ng-disabled="!file.isFilePermitted || isFileExtPermit(file.data.name)">View</button>
                     </div>
                 </td>
                 <td><button class="btn btn-danger" ng-click="removeSharedFile(file)">REMOVE</button></td>

@@ -59,6 +59,12 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
         });
     };
 
+    $scope.isFileExtPermit = function(name) {
+        var ext = name.split(".").pop();
+        if (angular.equals(ext,'txt')) {return false;}
+        if (angular.equals(ext,'jpg')) {return false;}
+        return true;
+    };
 
     $scope.download = function(file,ev) {
         download(file,ev,0)
