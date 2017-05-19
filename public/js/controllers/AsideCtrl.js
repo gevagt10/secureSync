@@ -10,6 +10,7 @@ app.controller('AsideCtrl', function($scope,sessionService) {
         {title: "Password policy", url: 'password'},
         {title: "Security policy", url: 'security'},
         {title: "Profile", url: 'profile'},
+        {title: "About", url: 'about'},
         {title: "Logout", url: 'logout'}
     ];
 

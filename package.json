@@ -23,6 +23,7 @@
     "debug": "~2.2.0",
     "express": "~4.14.0",
     "file-encryptor": "^0.1.1",
+    "font-awesome": "^4.7.0",
     "install": "^0.8.8",
     "jade": "~1.11.0",
     "jasny-bootstrap": "^3.1.3",

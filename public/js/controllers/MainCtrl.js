@@ -1,5 +1,7 @@
 app.controller('MainCtrl', function($rootScope,sessionService) {
 
+    $rootScope.hidden = false;
+
     if (sessionService.get('user') != null) {
         //console.log(sessionService.get('user').name);
         $rootScope.name = sessionService.get('user').name;

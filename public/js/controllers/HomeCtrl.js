@@ -76,30 +76,36 @@ app.controller('HomeCtrl', function($scope, $location, $mdDialog,sessionService,
 
     // Download event
     function download(file,ev,isPreview) {
-        var lock = file.security.lock;
-        if (lock) {
-            // Appending dialog to document.body to cover sidenav in docs app
-            var confirm = $mdDialog.prompt()
-                .title('Policy enforcment')
-                .textContent('Please insert password for open file')
-                .placeholder('Password')
-                .ariaLabel('Dog name')
-                .targetEvent(ev)
-                .ok('Ok')
-                .cancel('Cancel');
+        // Check if security exists
+        if (file.security) {
+            var lock = file.security.lock ? file.security.lock : null;
+            if (lock) {
+                // Appending dialog to document.body to cover sidenav in docs app
+                var confirm = $mdDialog.prompt()
+                    .title('Policy enforcment')
+                    .textContent('Please insert password for open file')
+                    .placeholder('Password')
+                    .ariaLabel('Dog name')
+                    .targetEvent(ev)
+                    .ok('Ok')
+                    .cancel('Cancel');
 
-            $mdDialog.show(confirm).then(function (result) {
-                if (angular.equals(lock,result)) {
-                    downloadFile();
-                } else {
-                    $scope.status = 'Password invalid';
-                }
-            }, function () {
+                $mdDialog.show(confirm).then(function (result) {
+                    if (angular.equals(lock,result)) {
+                        downloadFile();
+                    } else {
+                        $scope.status = 'Password invalid';
+                    }
+                }, function () {
 
-            });
-        } else { // No password needed
+                });
+            } else { // No password needed
+                downloadFile();
+            }
+        } else { // No security policy
             downloadFile();
         }
+
         // Download function
         function downloadFile(){
             proxyService.downloadFile({ file: file,user:User }).then(function(response){

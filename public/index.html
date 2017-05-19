@@ -13,16 +13,20 @@
     <link rel="stylesheet" href="../node_modules/animate.css/animate.min.css" />
     <link rel="stylesheet" href="../node_modules/jasny-bootstrap/dist/css/jasny-bootstrap.min.css" />
 
-
     <!-- CSS Core -->
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/media.css" />
+    <link rel="stylesheet" href="../node_modules/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900"/>
+    <link rel="stylesheet" href="css/cloud-animate.css" />
   </head>
   <body ng-controller="MainCtrl">
 
-    <header ng-include="'views/header.html'" ng-controller="HeaderCtrl" ng-show="logged"></header>
+    <header ng-include="'views/header.html'" ng-if="!hidden" ng-controller="HeaderCtrl" ng-show="logged"></header>
 
-    <aside ng-include="'views/aside.html'" ng-controller="AsideCtrl" ng-show="logged"></aside>
+    <aside ng-include="'views/aside.html'" ng-if="!hidden" ng-controller="AsideCtrl" ng-show="logged"></aside>
+
+    <section ng-include="'views/about.html'" ng-if="hidden" ng-controller="AboutCtrl"></section>
 
     <section ng-view></section>
 
@@ -57,6 +61,9 @@
     <script src="js/controllers/HomeCtrl.js"></script>
     <script src="js/controllers/GroupsCtrl.js"></script>
     <script src="js/controllers/ProfileCtrl.js"></script>
+    <script src="js/controllers/AboutCtrl.js"></script>
+
+
 
 
   </body>

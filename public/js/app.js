@@ -87,7 +87,15 @@ app.config(function($routeProvider,$locationProvider) {
                     }
                 }
             }
-        })
+    })
+    .when('/about', {
+            title: 'About',
+            resolve: {
+                init: function ($rootScope) {
+                    $rootScope.hidden = true;
+                }
+            }
+    })
     .when('/logout', {
         resolve: {
             logout: function ($location, sessionService,cookieService) {
