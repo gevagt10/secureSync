@@ -3,7 +3,7 @@ var router = express.Router();
 
 var multer = require('multer');
 var jwt = require('jsonwebtoken');
-
+var utils = require('../config/utils');
 // Models
 var User = require('../models/user');
 var File = require('../models/file');
@@ -11,7 +11,8 @@ var File = require('../models/file');
 // Encrypt files
 var fs = require('fs');
 var encryptor = require('file-encryptor');
-var key = 'fdfdfdfdf';
+//var key = 'fdfdfdfdf';
+var key = utils.getKey();
 var option = {algorithm: 'aes256'};
 var path = '../uploads/';
 var config = require('../config/config');
@@ -35,22 +36,6 @@ var upload = multer({storage: storage});
 
 /** Get all files **/
 router.post('/get', function (req, res) {
-    // File.find({'user._id': req.body.userid}, function (err, files) {
-    //     if (err) throw err;
-    //     return res.json({
-    //         success: true,
-    //         files: files
-    //     });
-    // });
-    //var s = usb.getDeviceList();
-    // var devices = usb.getDeviceList();
-    // var device = devices[0];
-    // device.open();
-    // device.interfaces[0].endpoints[0].transfer(64, function(error, data) {
-    //     console.log(error, data); // null, <Buffer 00, 00, 00, 00, 00, 00, 00, 00
-    // });
-    // console.log(device);
-
 
     var isError = false;
     User.findOne({'_id': req.body._id}, function (err, user) {
@@ -122,25 +107,32 @@ router.get('/download/:filename/:token', function (req, res, next) {
     // Change suffix file to DAT
     var customFile = filename.substr(0, filename.lastIndexOf(".")) + ".dat";
     if (fs.existsSync(customFile)) {
-        encryptor.decryptFile(customFile, filename, key, option, function (err) {
-            if (err) {
-                return res.json({
-                    success: false,
-                    message: 'File not found.'
-                });
-            } else {
-                // Callback for file download
-                res.download(filename, function (err) {
-                    if (err) {
-                        return res.json({
-                            success: false
-                        });
-                    } else {
-                        fs.unlink(filename);
-                    }
-                });
-            }
-        });
+        try {
+            encryptor.decryptFile(customFile, filename, utils.getKey(), option, function (err) {
+                if (err) {
+                    return res.json({
+                        success: false,
+                        message: 'File not found.'
+                    });
+                } else {
+                    // Callback for file download
+                    res.download(filename, function (err) {
+                        if (err) {
+                            return res.json({
+                                success: false
+                            });
+                        } else {
+                            fs.unlink(filename);
+                        }
+                    });
+                }
+            });
+        } catch (err) {
+            return res.json({
+                success: false,
+                message: 'File not found.'
+            });
+        }
     } else {
         return res.json({
             success: false,
