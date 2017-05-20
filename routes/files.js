@@ -18,7 +18,8 @@ var config = require('../config/config');
 var extantion = require('path');
 // Security policy
 var policy = require('../policy/securityPolicy');
-
+// USB
+var usb = require('usb');
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -41,6 +42,16 @@ router.post('/get', function (req, res) {
     //         files: files
     //     });
     // });
+    //var s = usb.getDeviceList();
+    // var devices = usb.getDeviceList();
+    // var device = devices[0];
+    // device.open();
+    // device.interfaces[0].endpoints[0].transfer(64, function(error, data) {
+    //     console.log(error, data); // null, <Buffer 00, 00, 00, 00, 00, 00, 00, 00
+    // });
+    // console.log(device);
+
+
     var isError = false;
     User.findOne({'_id': req.body._id}, function (err, user) {
         if (user) {
